@@ -73,11 +73,11 @@ export default function Index() {
                     <AppHeader subtitle="Головна" title={`Привіт, ${dashboard_data.user_data.first_name}!`} />
 
                     {dashboard_data.user_data.role=="student" && (
-                        <StudentDashboard average_mark={dashboard_data.data.average_mark} homeworks={dashboard_data.data.homeworks} lesson_in_month={dashboard_data.data.lesson_in_month} lesson_visited={dashboard_data.data.lesson_visited}/>
+                        <StudentDashboard future_lessons={dashboard_data.data.future_lessons} average_mark={dashboard_data.data.average_mark} homeworks={dashboard_data.data.homeworks} lesson_in_month={dashboard_data.data.lesson_in_month} lesson_visited={dashboard_data.data.lesson_visited}/>
                     )}
 
                     {dashboard_data.user_data.role=="teacher" && (
-                        <TeacherDashboard homeworks_count={dashboard_data.data.homeworks_count}/>
+                        <TeacherDashboard homeworks_count={dashboard_data.data.homeworks_count} future_lessons={dashboard_data.data.future_lessons}/>
                     )}
                 </div>
             )}

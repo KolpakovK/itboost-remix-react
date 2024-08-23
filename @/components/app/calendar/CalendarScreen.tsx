@@ -56,7 +56,6 @@ function CalendarScreen() {
             },
 
             onEventClick(calendarEvent) {
-                console.log(calendarEvent);
                 setSelectedEvent(calendarEvent.server_data);
                 setOpenDialog(true)
             },
@@ -88,7 +87,10 @@ function CalendarScreen() {
                             start: start_date,
                             end: end_format_date,
                             id: item.id,
-                            server_data:item
+                            server_data:item,
+                            _options:{
+                                additionalClasses: ["card-padding"]
+                            }
                         })
                     }
                 }catch{
@@ -139,7 +141,7 @@ function CalendarScreen() {
                                                 <Users className="h-4 w-4" />
                                                 <AlertTitle>Група</AlertTitle>
                                                 <AlertDescription>
-                                                    {`${selectedEvent.group}`}
+                                                    {`${selectedEvent.group.title}`}
                                                 </AlertDescription>
                                             </Alert>
 

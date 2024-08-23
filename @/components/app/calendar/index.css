@@ -1396,6 +1396,7 @@
   overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
+  cursor: pointer;
 }
 .sx__time-grid-event.is-event-copy {
   opacity: 0.5;

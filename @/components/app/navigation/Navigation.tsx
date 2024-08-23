@@ -32,7 +32,7 @@ const _navigation_items:any = {
         },
         {
             label:"Заняття на сьогодні",
-            link:"#"
+            link:"/today"
         },
         {
             label:"Календар",
