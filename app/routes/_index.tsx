@@ -42,12 +42,13 @@ export async function loader({ request }:LoaderFunctionArgs){
             })
         }
         
-    }).catch( (error:any) => {
+    }).catch( async (error:any) => {
         //ERROR
         console.log(error)
-        return ({
-            error: true,
-            message: error.message
+        return redirect("/login",{
+            headers: {
+                "Set-Cookie": await userCookie.serialize({}),
+            },
         })
     })
 
