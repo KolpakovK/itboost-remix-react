@@ -48,6 +48,37 @@ export async function action({ request }:ActionFunctionArgs){
         })
     }
 
+    if (data.get("type")=="checkStudent"){
+        response = await fetch(`${process.env.SERVER_HOST}education/lessons/${data.get("lesson_id")}/check/${data.get("student_id")}/`,{
+            method:"POST",
+            headers:{
+                "Authorization":`Bearer ${cookie.access}`,
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify({is_present:data.get("is_present"),is_late:data.get("is_late")})
+        }).then( res => res.json() ).then( async (data_res:any) => {
+
+            if (data_res.detail){
+                throw new Error(data_res.detail);
+            }else{
+
+                return {
+                    error:false,
+                    data:data_res
+                }
+            }
+            
+        }).catch( async (error:any) => {
+            //ERROR
+            console.log(error)
+            return redirect("/login",{
+                headers: {
+                    "Set-Cookie": await userCookie.serialize({}),
+                },
+            })
+        })
+    }
+
     return response;
 }
 
@@ -69,7 +100,7 @@ export async function loader({ request }:LoaderFunctionArgs){
         if (data_res.detail){
             throw new Error(data_res.detail);
         }else{
-            //console.log(data_res)
+            console.log(data_res)
 
             return ({
                 error: false,
@@ -81,11 +112,20 @@ export async function loader({ request }:LoaderFunctionArgs){
     }).catch( async (error:any) => {
         //ERROR
         console.log(error)
-        return redirect("/login",{
-            headers: {
-                "Set-Cookie": await userCookie.serialize({}),
-            },
-        })
+        if (error.message!="No lessons found for today."){
+            return redirect("/login",{
+                headers: {
+                    "Set-Cookie": await userCookie.serialize({}),
+                },
+            })
+        }
+        else{
+            return ({
+                error: true,
+                data: null,
+                user_data:cookie.user_data,
+            })
+        }
     })
 
     return response;
@@ -111,7 +151,9 @@ export default function TodayPage(){
 
                     <AppHeader subtitle="Оберіть заняття для початку" title={`Заняття на сьогодні`} />
 
-                    <TodaySchedule/>
+                    {static_data.data && (
+                        <TodaySchedule/>
+                    )}
                 </div>
             )}
         </div>

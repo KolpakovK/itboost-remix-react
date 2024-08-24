@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData, useSubmit } from "@remix-run/react";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 
 
 export default function TodaySchedule(){
+    let submit = useSubmit();
     let static_data:any = useLoaderData();
     let dynamic_data:any = useActionData();
 
@@ -21,7 +22,7 @@ export default function TodaySchedule(){
 
     useEffect( () => {
         SetIsLoading(false);
-        //console.log(static_data);
+        console.log(static_data);
     }, [static_data])
 
     useEffect( () => {
@@ -44,10 +45,21 @@ export default function TodaySchedule(){
         }
     },[selectedLesson] )
 
+
+    function CheckStudent(value:any,student_id:string,lesson_id:string){
+        submit({
+            type:"checkStudent",
+            student_id:student_id,
+            lesson_id:lesson_id,
+            is_late: value=="late",
+            is_present: value!="missing"
+        },{method:"POST"})
+    }
+
     return (
         <div className="flex justify-center ">
             <div className="block-size flex flex-col gap-6">
-                {!isLoading && (
+                {(!isLoading) && (
                     <Tabs defaultValue="0" onValueChange={ (v:string) => setSelectedLesson(parseInt(v)) }>
                         <TabsList>
                             {static_data.data.map( (item:any,index:number) => (
@@ -87,10 +99,12 @@ export default function TodaySchedule(){
                                                 {student.first_name} {student.last_name}
                                             </p>
 
-                                            <ToggleGroup type="single" size={"sm"}>
+                                            <ToggleGroup onValueChange={ (value:any) => CheckStudent(value,student.id,item.id) } defaultValue={ student.attendance ? (
+                                                student.attendance.is_late ? "late" : (student.attendance.is_present ? "present" : "missing")
+                                            ) : "missing" } type="single" size={"sm"}>
                                                 <ToggleGroupItem value="missing"><UserMinus2 className=" text-red-700" size={16}/></ToggleGroupItem>
-                                                <ToggleGroupItem value="b"><Clock className=" text-yellow-700" size={16}/></ToggleGroupItem>
-                                                <ToggleGroupItem value="c"><UserCheck2 className=" text-green-700" size={16}/></ToggleGroupItem>
+                                                <ToggleGroupItem value="late"><Clock className=" text-yellow-700" size={16}/></ToggleGroupItem>
+                                                <ToggleGroupItem value="present"><UserCheck2 className=" text-green-700" size={16}/></ToggleGroupItem>
                                             </ToggleGroup>
 
                                             <Select defaultValue={ student.attendance ? student.attendance.grade_on_lesson : null }>
