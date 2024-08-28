@@ -33,7 +33,7 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
 
                 {future_lessons && (
                     <div className="flex flex-col gap-2">
-                        {future_lessons.slice(0).reverse().map( (lesson:any,index:number) => (
+                        {future_lessons.map( (lesson:any,index:number) => (
                             <div key={index} className={cn(
                                 "flex gap-2 items-center p-3 border border-gray-200 rounded-md",
                                 format(lesson.lesson_date,"dd.MM.yyyy") == format(new Date,"dd.MM.yyyy") ? "bg-green-50" : "bg-white" )}>

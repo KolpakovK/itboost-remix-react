@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "
 import { UserCheck2, UserMinus2, Clock, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import UploadHomeWork from "./UploadHW";
 
 
 export default function TodaySchedule(){
@@ -56,6 +57,15 @@ export default function TodaySchedule(){
         },{method:"POST"})
     }
 
+    function MarkStudent(value:any,student_id:string,lesson_id:string){
+        submit({
+            type:"markStudent",
+            student_id:student_id,
+            lesson_id:lesson_id,
+            value: +value
+        },{method:"POST"})
+    }
+
     return (
         <div className="flex justify-center ">
             <div className="block-size flex flex-col gap-6">
@@ -68,26 +78,30 @@ export default function TodaySchedule(){
                         </TabsList>
 
                         {static_data.data.map( (item:any,index:number) => (
-                            <TabsContent value={`${index}`}>
+                            <TabsContent key={index} value={`${index}`}>
                                 <div className="flex flex-col gap-0 p-4 bg-white rounded-md border border-gray-200 shadow-sm w-full">
-                                    {hasTheme ? (
-                                        <div className="flex gap-4 items-end pb-6">
-                                            <div className="flex flex-col gap-1">
-                                                <p className="text-sm text-gray-500">Тема урока</p>
-                                                <p className="text-3xl text-gray-900 font-medium">{item.title}</p>
+                                    <div className="flex justify-between items-end">
+                                        {hasTheme ? (
+                                            <div className="flex gap-4 items-end pb-6">
+                                                <div className="flex flex-col gap-1">
+                                                    <p className="text-sm text-gray-500">Тема урока</p>
+                                                    <p className="text-3xl text-gray-900 font-medium">{item.title}</p>
+                                                </div>
+                                                <Button variant={"outline"} size={"icon"} onClick={ () => setHasTheme(false) }><Edit size={20}/></Button>
                                             </div>
-                                            <Button variant={"outline"} size={"icon"} onClick={ () => setHasTheme(false) }><Edit size={20}/></Button>
-                                        </div>
-                                    ) : (
-                                        <Form action="/today" method="post" className="flex gap-4 items-end pb-6">
-                                            <Input className=" hidden" name="lesson_id" value={item.id}/>
-                                            <div className="flex flex-col gap-1">
-                                                <p className="text-sm text-gray-500">Тема урока</p>
-                                                <Input type="text" name="lesson_theme" className=" min-w-[250px]"/>
-                                            </div>
-                                            <Button type="submit" name="type" value="setTheme">Зберегти</Button>
-                                        </Form>
-                                    )}
+                                        ) : (
+                                            <Form action="/today" method="post" className="flex gap-4 items-end pb-6">
+                                                <Input className=" hidden" name="lesson_id" value={item.id}/>
+                                                <div className="flex flex-col gap-1">
+                                                    <p className="text-sm text-gray-500">Тема урока</p>
+                                                    <Input type="text" name="lesson_theme" className=" min-w-[250px]"/>
+                                                </div>
+                                                <Button type="submit" name="type" value="setTheme">Зберегти</Button>
+                                            </Form>
+                                        )}
+
+                                        <UploadHomeWork lesson={item.id}/>
+                                    </div>
                                     
                                     {item.students.map( (student:any,studentIndex:number) => (
                                         <div key={studentIndex} className="flex items-center gap-2 py-3 border-b border-gray-200" style={ {opacity: hasTheme ? "1" : "0.5", pointerEvents: hasTheme ? "all" : "none"} }>
@@ -107,7 +121,8 @@ export default function TodaySchedule(){
                                                 <ToggleGroupItem value="present"><UserCheck2 className=" text-green-700" size={16}/></ToggleGroupItem>
                                             </ToggleGroup>
 
-                                            <Select defaultValue={ student.attendance ? student.attendance.grade_on_lesson : null }>
+                                            <div className={ student.attendance ? (!student.attendance.is_present ? "pointer-events-none opacity-50" : "") : "" }>
+                                            <Select onValueChange={ (value:any) => MarkStudent(value,student.id,item.id) } defaultValue={ student.attendance ? (student.attendance.grade_on_lesson ? student.attendance.grade_on_lesson.toString() : "" ) : "" }>
                                                 <SelectTrigger className="w-[100px]">
                                                     <SelectValue placeholder="Оцінка"/>
                                                 </SelectTrigger>
@@ -126,6 +141,7 @@ export default function TodaySchedule(){
                                                     <SelectItem value="12">12</SelectItem>
                                                 </SelectContent>
                                             </Select>
+                                            </div>
                                         </div>
                                     ) )}
 

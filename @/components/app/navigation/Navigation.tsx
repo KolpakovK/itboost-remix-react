@@ -22,7 +22,7 @@ const _navigation_items:any = {
         },
         {
             label:"Домашні завдання",
-            link:"#"
+            link:"/homework"
         },
     ],
     teacher:[
@@ -40,7 +40,7 @@ const _navigation_items:any = {
         },
         {
             label:"Домашні завдання",
-            link:"#"
+            link:"/homework"
         },
     ],
 }

@@ -1,22 +1,25 @@
-import { useLoaderData, useActionData, useSubmit } from "@remix-run/react";
-import { LoaderFunctionArgs, redirect, ActionFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useActionData } from "@remix-run/react";
+import { LoaderFunctionArgs, redirect, ActionFunctionArgs, unstable_parseMultipartFormData, unstable_createFileUploadHandler, UploadHandler, unstable_createMemoryUploadHandler } from "@remix-run/node";
 import { userCookie } from "~/utils/cookies";
 import { useEffect, useState } from "react";
 import AppNavigation from "@/components/app/navigation/Navigation";
 import AppHeader from "@/components/app/misc/AppHeader";
 import TodaySchedule from "@/components/app/today/TodaySchedule";
 
+import { createWriteStream } from "fs";
+import path from "path";
+
+import { useToast } from "@/components/ui/use-toast"
+
 export async function action({ request }:ActionFunctionArgs){
     const cookieHeader = request.headers.get("Cookie");
     const cookie = (await userCookie.parse(cookieHeader)) || null;
 
     if (!cookie) { return redirect("/login");} 
-
     const data:any = await request.formData();
 
     let response = null;
 
-    
     if (data.get("type")=="setTheme"){
         response = await fetch(`${process.env.SERVER_HOST}education/lessons/${data.get("lesson_id")}/theme/`,{
             method:"POST",
@@ -28,7 +31,11 @@ export async function action({ request }:ActionFunctionArgs){
         }).then( res => res.json() ).then( async (data_res:any) => {
 
             if (data_res.detail){
-                throw new Error(data_res.detail);
+                if (data_res.detail=="Given token not valid for any token type") throw new Error(data_res.detail);
+                return {
+                    error:true,
+                    data:data_res.detail
+                }
             }else{
 
                 return {
@@ -59,12 +66,87 @@ export async function action({ request }:ActionFunctionArgs){
         }).then( res => res.json() ).then( async (data_res:any) => {
 
             if (data_res.detail){
-                throw new Error(data_res.detail);
+                if (data_res.detail=="Given token not valid for any token type") throw new Error(data_res.detail);
+                return {
+                    error:true,
+                    data:data_res.detail
+                }
             }else{
 
                 return {
                     error:false,
                     data:data_res
+                }
+            }
+            
+        }).catch( async (error:any) => {
+            //ERROR
+            console.log(error)
+            return redirect("/login",{
+                headers: {
+                    "Set-Cookie": await userCookie.serialize({}),
+                },
+            })
+        })
+    }
+
+    if (data.get("type")=="markStudent"){
+        response = await fetch(`${process.env.SERVER_HOST}education/lessons/${data.get("lesson_id")}/mark/${data.get("student_id")}/`,{
+            method:"POST",
+            headers:{
+                "Authorization":`Bearer ${cookie.access}`,
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify({grade_on_lesson:data.get("value")})
+        }).then( res => res.json() ).then( async (data_res:any) => {
+
+            if (data_res.detail){
+                if (data_res.detail=="Given token not valid for any token type") throw new Error(data_res.detail);
+                return {
+                    error:true,
+                    data:data_res.detail
+                }
+            }else{
+                console.log(data_res);
+                return {
+                    error:false,
+                    data:data_res
+                }
+            }
+            
+        }).catch( async (error:any) => {
+            //ERROR
+            console.log(error)
+            return redirect("/login",{
+                headers: {
+                    "Set-Cookie": await userCookie.serialize({}),
+                },
+            })
+        })
+    }
+
+    if (data.get("type")=="uploadHomeWork"){
+
+        response = await fetch(`${process.env.SERVER_HOST}education/homework/set/`,{
+            method:"POST",
+            headers:{
+                "Authorization":`Bearer ${cookie.access}`,
+            },
+            body: data
+        }).then( res => res.json() ).then( async (data_res:any) => {
+
+            if (data_res.detail){
+                if (data_res.detail=="Given token not valid for any token type") throw new Error(data_res.detail);
+                return {
+                    error:true,
+                    data:data_res.detail
+                }
+            }else{
+                console.log(data_res);
+                return {
+                    error:false,
+                    type:"toast",
+                    data:data_res.message
                 }
             }
             
@@ -132,14 +214,38 @@ export async function loader({ request }:LoaderFunctionArgs){
 }
 
 export default function TodayPage(){
-    const submit = useSubmit();
     let static_data:any = useLoaderData();
+    let action_data:any = useActionData();
+
+    const { toast } = useToast()
 
     const [isLoading,SetIsLoading] = useState(true);
 
     useEffect( () => {
         SetIsLoading(false);
     }, [static_data])
+
+    useEffect( () => {
+        if (action_data){
+            if (action_data.error){
+                toast({
+                    variant: "destructive",
+                    title: "Ошибка!",
+                    description: action_data.data,
+                })
+            }
+            else{
+                if (action_data.type){
+                    if (action_data.type=="toast"){
+                        toast({
+                            title: "Готово!",
+                            description: action_data.data,
+                        })
+                    }
+                }
+            }
+        }
+    }, [action_data] )
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-50">
