@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import UploadHomeWork from "./UploadHW";
 
 
+
 export default function TodaySchedule(){
     let submit = useSubmit();
     let static_data:any = useLoaderData();
@@ -23,7 +24,6 @@ export default function TodaySchedule(){
 
     useEffect( () => {
         SetIsLoading(false);
-        console.log(static_data);
     }, [static_data])
 
     useEffect( () => {

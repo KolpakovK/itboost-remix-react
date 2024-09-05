@@ -6,6 +6,9 @@ import AppNavigation from "@/components/app/navigation/Navigation";
 import AppHeader from "@/components/app/misc/AppHeader";
 import TodaySchedule from "@/components/app/today/TodaySchedule";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertOctagon } from "lucide-react";
+
 import { createWriteStream } from "fs";
 import path from "path";
 
@@ -257,9 +260,23 @@ export default function TodayPage(){
 
                     <AppHeader subtitle="Оберіть заняття для початку" title={`Заняття на сьогодні`} />
 
-                    {static_data.data && (
+                    {static_data.data ? (
                         <TodaySchedule/>
+                    ) : (
+                        <div className="flex justify-center">
+                            <div className="block-size">
+                                <Alert>
+                                    <AlertOctagon className="size-4 !text-yellow-600" />
+                                    <AlertTitle>У вас в графіку нема занять!</AlertTitle>
+                                    <AlertDescription>
+                                        Якщо ви впевнені, що у вас є назначені заняття - зверніться до адміністрації.
+                                    </AlertDescription>
+                                </Alert> 
+                            </div>
+                        </div>
                     )}
+
+                    
                 </div>
             )}
         </div>

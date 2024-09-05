@@ -24,6 +24,10 @@ const _navigation_items:any = {
             label:"Домашні завдання",
             link:"/homework"
         },
+        {
+            label:"Активність",
+            link:"/"
+        },
     ],
     teacher:[
         {
@@ -41,6 +45,14 @@ const _navigation_items:any = {
         {
             label:"Домашні завдання",
             link:"/homework"
+        },
+        {
+            label:"Студенти",
+            link:"/"
+        },
+        {
+            label:"Активність",
+            link:"/"
         },
     ],
 }
@@ -74,9 +86,12 @@ export default function AppNavigation({ role,name,surname,avatar="" }:Readonly<{
     return (
         <div className="flex justify-center bg-white border-b border-gray-200">
             <div className="block-size flex justify-between items-center py-3">
-                <img src="/ITBoost_Logo.svg" alt="Main logo" className="h-8 w-fit"/>
+                <a href="/">
+                    <img src="/ITBoost_Logo.svg" alt="Main logo" className="h-8 w-fit"/>
+                </a>
+                
 
-                <div className="flex items-center gap-0">
+                <div className="flex items-center gap-1">
                     {_navigation_items[role].map( (nav_item:any,index:number) => (
                         <Button key={index} variant={ nav_item.link==location.pathname ? "secondary" : "ghost" } asChild><Link to={nav_item.link}>{ nav_item.label }</Link></Button>
                     ) )}

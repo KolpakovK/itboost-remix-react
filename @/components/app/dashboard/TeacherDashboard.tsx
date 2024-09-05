@@ -3,7 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-import { GraduationCap } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+import { GraduationCap, AlertOctagon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
 
@@ -33,6 +35,17 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
 
                 {future_lessons && (
                     <div className="flex flex-col gap-2">
+                        {!future_lessons.length && (
+                            <Alert>
+                                <AlertOctagon className="size-4 !text-yellow-600" />
+                                <AlertTitle>У вас в графіку нема занять!</AlertTitle>
+                                <AlertDescription>
+                                    Якщо ви впевнені, що у вас є назначені заняття - зверніться до адміністрації.
+                                </AlertDescription>
+                            </Alert>                          
+                        )}
+
+
                         {future_lessons.map( (lesson:any,index:number) => (
                             <div key={index} className={cn(
                                 "flex gap-2 items-center p-3 border border-gray-200 rounded-md",

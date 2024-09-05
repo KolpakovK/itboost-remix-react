@@ -4,7 +4,9 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
-import { Badge as BadgeIcon, GraduationCap, CalendarCheck, CalendarSearch } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+import { Badge as BadgeIcon, GraduationCap, CalendarCheck, CalendarSearch, AlertOctagon } from "lucide-react";
 
 
 export default function StudentDashboard({average_mark,homeworks,lesson_in_month,lesson_visited,future_lessons}:Readonly<{average_mark:number,homeworks:number,lesson_in_month:number,lesson_visited:any,future_lessons:any[]}>){
@@ -51,6 +53,16 @@ export default function StudentDashboard({average_mark,homeworks,lesson_in_month
 
             <div className="block-size p-4 bg-white rounded-md border border-gray-200 shadow-sm flex flex-col gap-4 min-h-[450px]">
                 <p className="text-sm text-gray-500">Графік занять на наступні 2 тижні</p>
+
+                {!future_lessons.length && (
+                    <Alert>
+                        <AlertOctagon className="size-4 !text-yellow-600" />
+                        <AlertTitle>У вас в графіку нема занять!</AlertTitle>
+                        <AlertDescription>
+                            Якщо ви впевнені, що у вас є назначені заняття - зверніться до адміністрації.
+                        </AlertDescription>
+                    </Alert>                          
+                )}
 
                 {future_lessons && (
                     <div className="flex flex-col gap-2">
