@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Form, useActionData } from "@remix-run/react";
-import { format, isFuture  } from "date-fns";
+import { format, isFuture, compareDesc } from "date-fns";
 
 import { useSubmit } from "@remix-run/react";
 
@@ -10,13 +10,16 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
-import { Download, MessageCircleMore } from "lucide-react";
+import { Download, MessageCircleMore, HeartHandshake } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+import { Table,TableBody,TableCell,TableHead,TableHeader,TableRow,} from "@/components/ui/table"  
   
 
 
@@ -91,17 +94,25 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                             </div>
                             )}
 
-                            <div className="flex gap-2 items-center justify-between p-3">
-                                <Label className="w-2/6">Урок</Label>
-                                <Label className="w-1/6">Завдання</Label>
-                                <Label className="w-1/6">Викладач</Label>
-                                <Label className="w-1/6">Дата створення ДЗ</Label>
-                                <Label className="w-1/6 text-right">Оцінка</Label>
-                            </div>
-
-                            {allHomeworks.homeworks.map( (homework:any,index:number) => (
-                                <HomeworkStudentTableCard serverURI={server} card={homework}  key={index}/>
-                            ) )}
+                            {allHomeworks.courses.length && (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[60px]">#</TableHead>
+                                        <TableHead>Урок</TableHead>
+                                        <TableHead>Завдання</TableHead>
+                                        <TableHead>Викладач</TableHead>
+                                        <TableHead>Дата створення ДЗ</TableHead>
+                                        <TableHead className="w-[120px] text-right">Оцінка</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {allHomeworks.homeworks.map( (homework:any,index:number) => (
+                                        <HomeworkStudentTableCard serverURI={server} card={homework} key={index} index={index}/>
+                                    ) )}
+                                </TableBody>
+                            </Table>
+                            )}
                         </div>
                     )}
                 </div>
@@ -152,20 +163,22 @@ function HomeworkStudentCard({card, serverURI}:Readonly<{card:any, serverURI:any
     )
 }
 
-function HomeworkStudentTableCard({card, serverURI}:Readonly<{card:any, serverURI:any}>){
+function HomeworkStudentTableCard({card, serverURI,index=0}:Readonly<{card:any, serverURI:any,index?:number}>){
     return(
-        <div className="flex gap-4 p-3 items-center rounded-md bg-transparent hover:bg-slate-50 duration-150">
-            <div className="flex items-center gap-2 w-2/6">
+        <TableRow>
+            <TableCell className="font-medium">{index+1}</TableCell>
+
+            <TableCell className="flex items-center gap-2">
                 <Avatar>
                     <AvatarImage src={card.lesson.course.poster} />
                     <AvatarFallback>{card.lesson.course.title[0]}</AvatarFallback>
                 </Avatar>
-                <p className="text-lg text-slate-900">{card.lesson.title}</p>
-            </div>
+                <p>{card.lesson.title}</p>
+            </TableCell>
 
-            <div className="w-1/6 flex gap-1 items-center">
+            <TableCell>
                 {card.homework_file && (
-                    <Button className="w-fit" variant={"secondary"} size={"sm"} asChild>
+                    <Button className="w-fit mr-2" variant={"secondary"} size={"sm"} asChild>
                         <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> Завданя</a>
                     </Button>
                 )}
@@ -177,20 +190,21 @@ function HomeworkStudentTableCard({card, serverURI}:Readonly<{card:any, serverUR
                         <PopoverContent>{card.description}</PopoverContent>
                     </Popover>
                 )}
-            </div>
+            </TableCell>
 
-            <p className=" text-slate-600 w-1/6">{`${card.lesson.teacher.first_name} ${card.lesson.teacher.last_name}`}</p>
+            <TableCell>{`${card.lesson.teacher.first_name} ${card.lesson.teacher.last_name}`}</TableCell>
 
-            <p className=" text-slate-600 w-1/6">{ format(card.date_create,"dd.MM.yyyy") }</p>
+            <TableCell>{ format(card.date_create,"dd.MM.yyyy") }</TableCell>
 
-            <div className="w-1/6 flex justify-end">
+            <TableCell className="text-right">
                 {card.submission ? (
                     <Badge>{card.submission.grade ? card.submission.grade : "Ще не перевірено"}</Badge>
                 ) : (
-                    <Badge variant={"destructive"}>Потрібно винокати</Badge>
+                    "Потрібно винокати"
                 )}
-            </div>
-        </div>
+            </TableCell>
+
+        </TableRow>
     )
 }
 
@@ -327,18 +341,29 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
         <div className="flex justify-center ">
             <div className="block-size flex justify-center">
                 <div className={cn(
-                    "p-4 bg-white rounded-md border border-gray-200 shadow-sm min-h-[450px] duration-150",
+                    "p-4 bg-white rounded-md border border-gray-200 shadow-sm min-h-[250px] duration-150",
                     isFullWidth ? "w-full" : "w-full lg:w-1/2"
                 )}>
+                    {/* Homeworks to check */}
                     {!isFullWidth ? (
                     <div className="flex flex-col gap-3">
+                        {!homeworksToDo.length && (
+                            <Alert>
+                                <HeartHandshake className="size-4 !text-green-600" />
+                                <AlertTitle>Нема завдань на перевірку!</AlertTitle>
+                                <AlertDescription>
+                                    Вау! В це важко повірити, але у вас нема завдань на перевірку. Так тримати!
+                                </AlertDescription>
+                            </Alert>                          
+                        )}
+
                         {homeworksToDo.map( (homework:any,index:number) => (
                             <HomeworkTeacherCard serverURI={server} card={homework}  key={index}/>
                         ) )}
                     </div>
                     ) : (
                         <div className="flex flex-col gap-2">
-                            
+                            {/* all homeworks */}
                             {allHomeworks.groups.length && (
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center gap-2">
@@ -375,19 +400,26 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                                     </div>
                                 </div>
                             )}
-                            
 
-                            <div className="flex gap-2 items-center justify-between p-3">
-                                <Label className="w-2/6">Студент</Label>
-                                <Label className="w-1/6">Завантажено</Label>
-                                <Label className="w-1/6 text-right">Завдання</Label>
-                                <Label className="w-1/6 text-right">Робота</Label>
-                                <Label className="w-1/6 text-right">Оцінка</Label>
-                            </div>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[60px]">#</TableHead>
+                                        <TableHead>Студент</TableHead>
+                                        <TableHead>Дата завантаження</TableHead>
+                                        <TableHead className="w-[100px]">Примітка</TableHead>
+                                        <TableHead>Завдання</TableHead>
+                                        <TableHead>Робота</TableHead>
+                                        <TableHead className="w-[120px] text-right">Оцінка</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {allHomeworks.submissions.map( (homework:any,index:number) => (
+                                        <HomeworkTableTeacherCard serverURI={server} card={homework} key={index} index={index}/>
+                                    ) )}
+                                </TableBody>
+                            </Table>
 
-                            {allHomeworks.submissions.map( (homework:any,index:number) => (
-                                <HomeworkTableTeacherCard serverURI={server} card={homework}  key={index}/>
-                            ) )}
                         </div>
                     )}
                 </div>
@@ -493,46 +525,60 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
 }
 
 
-function HomeworkTableTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any}>){
+function HomeworkTableTeacherCard({card, serverURI,index=0}:Readonly<{card:any, serverURI:any,index?:number}>){
     return(
-        <div className="flex gap-2 items-center justify-between p-3 rounded-md bg-transparent hover:bg-slate-50 duration-150">
-            
-            <div className="flex items-center gap-2 w-2/6">
+        <TableRow>
+            <TableCell className="font-medium">{index+1}</TableCell>
+
+            <TableCell className="flex items-center gap-2">
                 <Avatar>
                     <AvatarImage src={card.student.avatar} />
                     <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
                 </Avatar>
-                <p className="text-lg text-slate-900">{`${card.student.first_name} ${card.student.last_name}`}</p>
-            </div>
 
-            <p className=" text-slate-600 w-1/6">{ format(card.date_submitted,"dd.MM.yyyy") }</p>
+                {`${card.student.first_name} ${card.student.last_name}`}
+            </TableCell>
 
-            <div className="w-1/6 flex gap-1 items-center justify-end">
+            <TableCell>{format(card.date_submitted,"dd.MM.yyyy")}</TableCell>
+
+            <TableCell>
+                {compareDesc(card.homework.due_date,card.date_submitted)!=-1 ? (
+                    <Badge variant={"secondary"}>Запізно</Badge>
+                ) : (
+                    <Badge variant={"outline"}>Вчасно</Badge>
+                )}
+            </TableCell>
+
+            <TableCell>
                 {card.homework.homework_file && (
-                    <Button className="w-fit" variant={"secondary"} size={"sm"} asChild>
-                        <a href={`${serverURI.slice(0, -1)}${card.homework.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> Завданя</a>
-                    </Button>
-                )}
-                {card.homework.description && (
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button size={"icon"} variant={"outline"}><MessageCircleMore size={20}/></Button>
-                        </PopoverTrigger>
-                        <PopoverContent>{card.homework.description}</PopoverContent>
-                    </Popover>
-                )}
-            </div>
-
-            <div className="flex justify-end w-1/6">
-                {card.file && (
-                <Button asChild>
-                    <a href={`${serverURI.slice(0, -1)}${card.file}`} target="_blank" download><Download className="mr-2" size={20}/> Робота</a>
+                <Button className="mr-2" variant={"outline"} size={"icon"} asChild>
+                    <a href={`${serverURI.slice(0, -1)}${card.homework.homework_file}`} target="_blank" download><Download size={20}/></a>
                 </Button>
                 )}
-            </div>
+                {card.homework.description && (
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button size={"icon"} variant={"outline"}><MessageCircleMore size={20}/></Button>
+                    </PopoverTrigger>
+                    <PopoverContent>{card.homework.description}</PopoverContent>
+                </Popover>
+                )}
+            </TableCell>
 
-            <p className=" text-slate-900 w-1/6 text-right">{card.grade ? card.grade : "Не перевірено"}</p>
+            <TableCell>
+                {card.file && (
+                    <Button variant={"secondary"} size={"icon"} asChild>
+                        <a href={`${serverURI.slice(0, -1)}${card.file}`} target="_blank" download><Download size={20}/></a>
+                    </Button>
+                )}
+            </TableCell>
 
-        </div>
+            <TableCell className="text-right">
+                {card.grade ? (
+                    <Badge>{card.grade}</Badge>
+                ) : "Не перевірено"}
+            </TableCell>
+
+        </TableRow>
     )
 }

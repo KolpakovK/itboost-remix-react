@@ -48,11 +48,11 @@ const _navigation_items:any = {
         },
         {
             label:"Студенти",
-            link:"/"
+            link:"/students"
         },
         {
-            label:"Активність",
-            link:"/"
+            label:"Матеріали",
+            link:"/materials"
         },
     ],
 }
