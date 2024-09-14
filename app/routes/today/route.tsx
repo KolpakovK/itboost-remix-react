@@ -191,6 +191,7 @@ export async function loader({ request }:LoaderFunctionArgs){
                 error: false,
                 data: data_res,
                 user_data:cookie.user_data,
+                serverURI : process.env.SERVER_HOST,
             })
         }
         
@@ -254,16 +255,16 @@ export default function TodayPage(){
         <div className="flex flex-col min-h-screen bg-gray-50">
             {isLoading && (<p>loading</p>)}
             {!isLoading && (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 pb-20 lg:pb-0">
                     {}
-                    <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar}/>
+                    <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
                     <AppHeader subtitle="Оберіть заняття для початку" title={`Заняття на сьогодні`} />
 
                     {static_data.data ? (
                         <TodaySchedule/>
                     ) : (
-                        <div className="flex justify-center">
+                        <div className="flex justify-center px-4 lg:px-0">
                             <div className="block-size">
                                 <Alert>
                                     <AlertOctagon className="size-4 !text-yellow-600" />

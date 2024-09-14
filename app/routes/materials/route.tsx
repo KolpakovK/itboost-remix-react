@@ -69,7 +69,8 @@ export async function loader({ request }:LoaderFunctionArgs){
     if (cookie.user_data.role=="student") { return redirect("/");} 
 
     return {
-        user_data: cookie.user_data
+        user_data: cookie.user_data,
+        serverURI : process.env.SERVER_HOST,
     };
 }
 
@@ -102,12 +103,12 @@ export default function MaterialPage() {
             {isLoading && (<p>loading</p>)}
             {!isLoading && (
                 <div className="flex flex-col gap-6">
-                    <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar}/>
+                    <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
                     <AppHeader subtitle="Тут ви знайдете всі актуальні матеріали" title={`Матеріали для занять`} />
 
                     {actioin_data && (
-                    <div className="flex items-center flex-col gap-4">
+                    <div className="flex items-center flex-col gap-4 px-4 lg:px-0 pb-20 lg:pb-0">
                         <div className=" block-size">
 
                             <div className="flex items-center gap-2">
@@ -128,11 +129,11 @@ export default function MaterialPage() {
 
                         </div>
 
-                        <div className="block-size grid grid-cols-4 gap-6">
+                        <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
                             {actioin_data.data && ( 
                             <>
                                 {actioin_data.data.current_course.materials.map( (material:any,index:number) => (
-                                    <div className="p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
+                                    <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
                                         <Badge variant={"secondary"} className="w-fit">{index+1}</Badge>
                                         <p className="text-xs text-slate-500 uppercase tracking-wider">{material.title}</p>
                                         <p className=" text-slate-900">{material.desc}</p> 

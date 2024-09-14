@@ -38,7 +38,8 @@ export async function loader({ request }:LoaderFunctionArgs){
             return ({
                 error: false,
                 data: data_res,
-                user_data: cookie.user_data
+                user_data: cookie.user_data,
+                serverURI : process.env.SERVER_HOST,
             })
         }
         
@@ -67,8 +68,8 @@ export default function Index() {
         <div className="flex flex-col min-h-screen bg-gray-50">
             {isLoading && (<p>loading</p>)}
             {!isLoading && (
-                <div className="flex flex-col gap-6">
-                    <AppNavigation role={dashboard_data.user_data.role} name={dashboard_data.user_data.first_name} surname={dashboard_data.user_data.last_name} avatar={dashboard_data.user_data.avatar}/>
+                <div className="flex flex-col gap-6 pb-20 lg:pb-0">
+                    <AppNavigation role={dashboard_data.user_data.role} name={dashboard_data.user_data.first_name} surname={dashboard_data.user_data.last_name} avatar={dashboard_data.user_data.avatar} serverURI={dashboard_data.serverURI}/>
 
                     <AppHeader subtitle="Головна" title={`Привіт, ${dashboard_data.user_data.first_name}!`} />
 

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format } from "date-fns";
 
 export const meta: MetaFunction = () => {
     return [
@@ -28,9 +29,9 @@ export async function action({request}:ActionFunctionArgs){
 
     if (!cookie) { return redirect("/login");} 
 
-    if (cookie.user_data.role=="student") { return redirect("/");} 
+    if (cookie.user_data.role=="teacher") { return redirect("/");} 
 
-    const response = await fetch(`${process.env.SERVER_HOST}user/student_list/${ body.get("id") ? `?group_id=${body.get("id")}` : "" }`,{
+    const response = await fetch(`${process.env.SERVER_HOST}user/activity/${ body.get("id") ? `?course_id=${body.get("id")}` : "" }`,{
         method:"GET",
         headers:{
             "Authorization":`Bearer ${cookie.access}`,
@@ -67,7 +68,7 @@ export async function loader({ request }:LoaderFunctionArgs){
 
     if (!cookie) { return redirect("/login");} 
 
-    if (cookie.user_data.role=="student") { return redirect("/");} 
+    if (cookie.user_data.role=="teacher") { return redirect("/");} 
 
     return {
         user_data: cookie.user_data,
@@ -75,7 +76,7 @@ export async function loader({ request }:LoaderFunctionArgs){
     };
 }
 
-export default function MaterialPage() {
+export default function ActivityPage() {
     let static_data:any = useLoaderData();
     let actioin_data:any = useActionData();
     const [isLoading,SetIsLoading] = useState(true);
@@ -94,13 +95,13 @@ export default function MaterialPage() {
     }, [actioin_data] )
 
 
-    function updateSelectedGroup(id:string){
+    function updateSelectedCourse(id:string){
         console.log(id)
         submit({id:id},{method:"POST"});
     }
     
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-gray-50 pb-20 lg:pb-0">
             {isLoading && (<p>loading</p>)}
             {!isLoading && (
                 <div className="flex flex-col gap-6">
@@ -109,19 +110,19 @@ export default function MaterialPage() {
                     <AppHeader subtitle="Тут ви знайдете інформацію по студентам" title={`Всі студенти`}/>
 
                     {actioin_data && (
-                    <div className="flex items-center flex-col gap-4 px-4 lg:px-0 pb-20 lg:pb-0">
+                    <div className="flex items-center flex-col gap-4 px-4 lg:px-0">
                         <div className=" block-size">
 
                             <div className="flex items-center gap-2">
-                                <Label>Группа:</Label>
-                                <Select defaultValue={actioin_data.data.students.id} onValueChange={ (v:string) => updateSelectedGroup(v) }>
+                                <Label>Курс:</Label>
+                                <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Оберіть" />
                                     </SelectTrigger>
                                     <SelectContent>
 
-                                        {actioin_data.data.groups.map( (group:any,index:number) => (
-                                            <SelectItem key={index} value={group.id}>{group.title}</SelectItem>
+                                        {actioin_data.data.courses.map( (course:any,index:number) => (
+                                            <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
                                         ) )}
                                         
                                     </SelectContent>
@@ -133,31 +134,38 @@ export default function MaterialPage() {
                         <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
                             {actioin_data.data && ( 
                             <>
-                                {actioin_data.data.students.students.map( (student:any,index:number) => (
-                                    <div className="p-4 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
-                                        <div className="flex flex-col gap-2">
-                                            <Avatar>
-                                                <AvatarImage src={static_data.serverURI.slice(0, -1)+student.avatar} />
-                                                <AvatarFallback>{`${student.first_name[0]}${student.last_name[0]}`}</AvatarFallback>
-                                            </Avatar>
+                                {actioin_data.data.current_course.lessons.map( (lesson:any,index:number) => (
+                                    <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
 
-                                            <p className="text-lg text-slate-900">{`${student.first_name} ${student.last_name}`}</p>
+                                        <div className="flex gap-2 items-baseline">
+                                            <p className=" text-sm text-slate-500 font-light">Назва:</p>
+                                            <p className=" text-sm text-slate-900 font-medium">{lesson.title}</p>
                                         </div>
 
                                         <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Вік:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{student.age}</p>
+                                            <p className=" text-sm text-slate-500 font-light">Дата:</p>
+                                            <p className=" text-sm text-slate-900 font-medium">{ lesson.lesson_date && (format(lesson.lesson_date,"dd.MM.yyyy") )}</p>
                                         </div>
 
                                         <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Номер телефона:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{student.phone_number}</p>
+                                            <p className=" text-sm text-slate-500 font-light">Оцінка на заняті:</p>
+                                            <p className=" text-sm text-green-600 font-bold">{lesson.grade_on_lesson}</p>
                                         </div>
 
                                         <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Пошта:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{student.email}</p>
+                                            <p className=" text-sm text-slate-500 font-light">Оцінка за домашню роботу:</p>
+                                            <p className=" text-sm text-violet-600 font-bold">{lesson.homework_grade}</p>
                                         </div>
+
+                                        <div className="flex gap-2 items-baseline">
+                                            <p className=" text-sm text-slate-500 font-light">Відвідування:</p>
+                                            <p className=" text-sm text-slate-900 font-medium">{lesson.is_present ? ( lesson.is_late ?
+                                                (<Badge variant={"secondary"}>Запізнився</Badge>) :
+                                                (<Badge>Присутний</Badge>) ) :
+                                                (<Badge variant={"destructive"}>Відсутній</Badge>)}
+                                            </p>
+                                        </div>
+
                                     </div>
                                 ) )}
                             </> )}

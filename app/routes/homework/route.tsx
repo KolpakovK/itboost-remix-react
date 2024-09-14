@@ -202,7 +202,10 @@ export async function loader({ request }:LoaderFunctionArgs){
 
     if (!cookie) { return redirect("/login");} 
 
-    let result = cookie.user_data;
+    let result = {
+        user_data : cookie.user_data,
+        serverURI : process.env.SERVER_HOST,
+    };
 
     return result;
 }
@@ -245,8 +248,8 @@ export default function HomeworkPage() {
         <div className="flex flex-col min-h-screen bg-gray-50">
             {isLoading && (<p>loading</p>)}
             {!isLoading && (
-                <div className="flex flex-col gap-6">
-                    <AppNavigation role={static_data.role} name={static_data.first_name} surname={static_data.last_name} avatar={static_data.avatar}/>
+                <div className="flex flex-col gap-6 pb-20 lg:pb-0">
+                    <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
                     <AppHeader title={`Домашні роботи`}>
                         <Tabs defaultValue="to-do" onValueChange={ (v:string) => setSelectedView(v) }>
@@ -257,11 +260,11 @@ export default function HomeworkPage() {
                         </Tabs>
                     </AppHeader>
 
-                    {static_data.role=="student" && (
+                    {static_data.user_data.role=="student" && (
                         <HomeworkStudentListing selectedView={selectedView}/>
                     )}
 
-                    {static_data.role=="teacher" && (
+                    {static_data.user_data.role=="teacher" && (
                         <HomeworkTeacherListing selectedView={selectedView}/>
                     )}
                 </div>

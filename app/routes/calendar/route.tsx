@@ -37,6 +37,7 @@ export async function action({ request }:ActionFunctionArgs){
             return ({
                 error: false,
                 data: data_res,
+                serverURI : process.env.SERVER_HOST,
             })
         }
         
@@ -59,7 +60,10 @@ export async function loader({ request }:LoaderFunctionArgs){
 
     if (!cookie) { return redirect("/login");} 
 
-    let result = cookie.user_data;
+    let result = {
+        user_data : cookie.user_data,
+        serverURI : process.env.SERVER_HOST,
+    };
 
     return result;
 }
@@ -79,11 +83,11 @@ export default function CalendarPage() {
             {isLoading && (<p>loading</p>)}
             {!isLoading && (
                 <div className="flex flex-col gap-6">
-                    <AppNavigation role={static_data.role} name={static_data.first_name} surname={static_data.last_name} avatar={static_data.avatar}/>
+                    <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
                     <AppHeader title={`Календар занять`} />
 
-                    <CalendarScreen/>
+                    <CalendarScreen serverURI={static_data.serverURI}/>
                 </div>
             )}
         </div>

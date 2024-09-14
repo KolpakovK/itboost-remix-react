@@ -20,7 +20,7 @@ import { Calendar, UserCircle, Clock, Users } from 'lucide-react'
 
 const eventsServicePlugin = createEventsServicePlugin();
 
-function CalendarScreen() {
+function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
     const submit = useSubmit();
     let schedule:any = useActionData();
 
@@ -101,7 +101,7 @@ function CalendarScreen() {
     }, [isLoading] )
     
     return (
-        <div className="flex justify-center ">
+        <div className="flex justify-center px-4 lg:px-0">
             <div className="block-size">
                 {!isLoading && (
 
@@ -133,6 +133,9 @@ function CalendarScreen() {
                                                 <UserCircle className="h-4 w-4" />
                                                 <AlertTitle>Викладач</AlertTitle>
                                                 <AlertDescription>
+                                                    {selectedEvent.teacher.avatar && (
+                                                        <img src={serverURI.slice(0, -1)+selectedEvent.teacher.avatar} className=" size-8 rounded-full object-cover"/>
+                                                    )}
                                                     {`${selectedEvent.teacher.first_name} ${selectedEvent.teacher.last_name}`}
                                                 </AlertDescription>
                                             </Alert>

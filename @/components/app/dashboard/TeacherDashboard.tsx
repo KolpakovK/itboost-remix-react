@@ -22,15 +22,15 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
     ]
 
     return (
-        <div className="flex flex-col gap-8 items-center ">
-            <div className="block-size grid grid-cols-4 gap-6">
+        <div className="flex flex-col gap-8 items-center px-4 lg:px-0">
+            <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
                 {_cards.map( (card:any,index:number) => (
                     <DashboardCard key={index} icon={ card.icon } icon_color={ card.color } title={ card.title } value={ card.value } decoration={ card.decoration }></DashboardCard>
                 ) )}
                 
             </div>
 
-            <div className="block-size p-4 bg-white rounded-md border border-gray-200 shadow-sm flex flex-col gap-4 min-h-[450px]">
+            <div className="block-size p-3 lg:p-4 bg-white rounded-md border border-gray-200 shadow-sm flex flex-col gap-4 min-h-[450px]">
                 <p className="text-sm text-gray-500">Графік занять на наступні 2 тижні</p>
 
                 {future_lessons && (
@@ -48,10 +48,10 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
 
                         {future_lessons.map( (lesson:any,index:number) => (
                             <div key={index} className={cn(
-                                "flex gap-2 items-center p-3 border border-gray-200 rounded-md",
+                                "flex flex-col lg:flex-row gap-2 lg:items-center p-2 lg:p-3 border border-gray-200 rounded-md",
                                 format(lesson.lesson_date,"dd.MM.yyyy") == format(new Date,"dd.MM.yyyy") ? "bg-green-50" : "bg-white" )}>
                                 <div className="flex flex-col flex-1">
-                                    <p className=" text-xl text-gray-900 font-medium">{lesson.course.title}</p>
+                                    <p className="text-lg lg:text-xl text-gray-900 font-medium">{lesson.course.title}</p>
                                     <p className="text-sm text-gray-500">{lesson.course.desc}</p>
                                 </div>
 

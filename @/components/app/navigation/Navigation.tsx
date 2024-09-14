@@ -26,7 +26,7 @@ const _navigation_items:any = {
         },
         {
             label:"Активність",
-            link:"/"
+            link:"/activity"
         },
     ],
     teacher:[
@@ -64,14 +64,14 @@ const _dropdown_menu:any = [
         link   :  null
     },
     {
+        type   :  "link",
+        value  :  "Налаштування",
+        link   :  "/user-settings"
+    },
+    {
         type   :  "separator",
         value  :  null,
         link   :  null
-    },
-    {
-        type   :  "link",
-        value  :  "Налаштування",
-        link   :  "#"
     },
     {
         type   :  "link",
@@ -80,18 +80,18 @@ const _dropdown_menu:any = [
     },
 ]
 
-export default function AppNavigation({ role,name,surname,avatar="" }:Readonly<{role:string,avatar:string,name:string,surname:string}>){
+export default function AppNavigation({ role,name,surname,avatar="",serverURI=""}:Readonly<{role:string,avatar:string,name:string,surname:string,serverURI?:string}>){
     const location = useLocation();
 
     return (
-        <div className="flex justify-center bg-white border-b border-gray-200">
+        <div className="flex justify-center bg-white border-b border-gray-200 px-4 lg:px-0">
             <div className="block-size flex justify-between items-center py-3">
                 <a href="/">
                     <img src="/ITBoost_Logo.svg" alt="Main logo" className="h-8 w-fit"/>
                 </a>
                 
 
-                <div className="flex items-center gap-1">
+                <div className="items-center gap-1 hidden lg:flex">
                     {_navigation_items[role].map( (nav_item:any,index:number) => (
                         <Button key={index} variant={ nav_item.link==location.pathname ? "secondary" : "ghost" } asChild><Link to={nav_item.link}>{ nav_item.label }</Link></Button>
                     ) )}
@@ -103,11 +103,19 @@ export default function AppNavigation({ role,name,surname,avatar="" }:Readonly<{
                     <DropdownMenu>
                         <DropdownMenuTrigger>
                             <Avatar>
-                                <AvatarImage src={avatar} />
+                                <AvatarImage src={serverURI.slice(0, -1)+avatar} />
                                 <AvatarFallback>{getInitials(`${name} ${surname}`)}</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
+                            <div className="block lg:hidden">
+                                <DropdownMenuLabel>Навігація</DropdownMenuLabel>
+                                {_navigation_items[role].map( (nav_item:any,index:number) => (
+                                    <DropdownMenuItem key={index} asChild><Link to={nav_item.link}>{nav_item.label}</Link></DropdownMenuItem>
+                                ) )}
+                                <DropdownMenuSeparator />
+                            </div>
+
                             {_dropdown_menu.map( (dropdown_item:any,index:number) => (
                                 <div key={index}>
                                     {dropdown_item.type=="title" && (<DropdownMenuLabel>{dropdown_item.value}</DropdownMenuLabel>)}

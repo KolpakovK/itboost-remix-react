@@ -54,16 +54,17 @@ export async function action({
 export default function LoginPage() {
     return (
         
-        <div className="grid grid-cols-5">
+        <div className="flex flex-col-reverse lg:grid grid-cols-5">
         
-            <div className="bg-white col-span-2 min-h-screen flex justify-center">
-                <div className="w-full max-w-md flex flex-col justify-between gap-12 min-h-full py-8">
-                    <img src="/ITBoost_Logo.svg" alt="Main logo" className="h-12 w-fit" />
+            <div className="bg-white col-span-2 lg:min-h-screen flex justify-center">
+                <div className="w-full max-w-md flex flex-col lg:justify-between gap-8 lg:gap-12 h-fit lg:min-h-full py-8 px-4 lg:py-8">
+                    <img src="/ITBoost_Logo.svg" alt="Main logo" className="h-12 w-fit absolute left-4 top-4 saturate-0 brightness-[600] lg:saturate-100 lg:brightness-100 lg:relative" />
+
                     
-                    <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-6 lg:gap-8">
                         <div className="flex flex-col gap-0">
-                            <p className="text-lg text-gray-500 leading-tight">Увійдіть до кабінету щоб розпочати роботу</p>
-                            <h1 className="font-display text-6xl text-gray-950 leading-tight">Навчальна платформа <span className='text-violet-500'>ITBoost</span></h1>
+                            <p className="text-sm lg:text-lg text-gray-500 leading-tight">Увійдіть до кабінету щоб розпочати роботу</p>
+                            <h1 className="font-display text-4xl lg:text-6xl text-gray-950 leading-tight">Навчальна платформа <span className='text-violet-500'>ITBoost</span></h1>
                         </div>
                         
                         <LoginForm/>
@@ -73,7 +74,7 @@ export default function LoginPage() {
                 </div>
             </div>
             
-            <div className="min-h-screen bg-cover col-span-3" style={ {backgroundImage: "url(https://images.unsplash.com/photo-1584697964328-b1e7f63dca95?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)"} }></div>
+            <div className="h-[275px] lg:min-h-screen bg-cover col-span-3 rounded-b-3xl lg:rounded-none" style={ {backgroundImage: "url(https://images.unsplash.com/photo-1584697964328-b1e7f63dca95?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)"} }></div>
         </div>
         
     );

@@ -62,7 +62,7 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
     }
 
     return (
-        <div className="flex justify-center ">
+        <div className="flex justify-center px-4 lg:px-0">
             <div className="block-size flex justify-center">
                 <div className={cn(
                     "p-4 bg-white rounded-md border border-gray-200 shadow-sm min-h-[450px] duration-150",
@@ -70,6 +70,16 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                 )}>
                     {!isFullWidth ? (
                     <div className="flex flex-col gap-3">
+                        {!homeworksToDo.length && (
+                            <Alert>
+                                <HeartHandshake className="size-4 !text-green-600" />
+                                <AlertTitle>Нема завдань на виконання!</AlertTitle>
+                                <AlertDescription>
+                                    Вау! В це важко повірити, але у вас нема завдань на перевірку. Так тримати!
+                                </AlertDescription>
+                            </Alert>                          
+                        )}
+
                         {homeworksToDo.map( (homework:any,index:number) => (
                             <HomeworkStudentCard serverURI={server} card={homework}  key={index}/>
                         ) )}
@@ -170,7 +180,7 @@ function HomeworkStudentTableCard({card, serverURI,index=0}:Readonly<{card:any, 
 
             <TableCell className="flex items-center gap-2">
                 <Avatar>
-                    <AvatarImage src={card.lesson.course.poster} />
+                    <AvatarImage src={serverURI.slice(0, -1)+card.lesson.course.poster} />
                     <AvatarFallback>{card.lesson.course.title[0]}</AvatarFallback>
                 </Avatar>
                 <p>{card.lesson.title}</p>
@@ -338,7 +348,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
     }
 
     return (
-        <div className="flex justify-center ">
+        <div className="flex justify-center px-4 lg:px-0">
             <div className="block-size flex justify-center">
                 <div className={cn(
                     "p-4 bg-white rounded-md border border-gray-200 shadow-sm min-h-[250px] duration-150",
@@ -365,7 +375,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                         <div className="flex flex-col gap-2">
                             {/* all homeworks */}
                             {allHomeworks.groups.length && (
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4 w-full overflow-scroll">
                                     <div className="flex items-center gap-2">
                                         <Label>Група:</Label>
                                         <Select defaultValue={allHomeworks.groups[0].id} onValueChange={ (v:string) => getHomeworksByGroup(v) }>
@@ -401,7 +411,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                                 </div>
                             )}
 
-                            <Table>
+                            <Table className=" overflow-scroll">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-[60px]">#</TableHead>
@@ -446,12 +456,12 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
     return(
         <div className="flex flex-col gap-4 p-3 rounded-md bg-transparent hover:bg-slate-50 duration-150">
 
-            <div className="flex justify-between gap-2 w-full">
+            <div className="flex flex-col lg:flex-row lg:justify-between gap-2 w-full">
                 <div className="flex flex-col gap-2">
                     
                     <div className="flex flex-col gap-2">
                         <Avatar>
-                            <AvatarImage src={card.student.avatar} />
+                            <AvatarImage src={serverURI.slice(0, -1)+card.student.avatar} />
                             <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
                         </Avatar>
                         <p className="text-lg text-slate-900">{`${card.student.first_name} ${card.student.last_name}`}</p>
@@ -470,7 +480,7 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
                     </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2 w-1/3 pl-3 border-l border-l-slate-200">
+                <div className="flex flex-col lg:items-end gap-2 lg:w-1/3 lg:pl-3 lg:border-l lg:border-l-slate-200">
                     <p className="text-sm font-medium text-slate-900">Завдання:</p>
                     {card.homework.homework_file && (
                         <Button className="w-fit" variant={"secondary"} size={"sm"} asChild>
@@ -479,7 +489,7 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
                     )}
 
                     {card.homework.description && (
-                        <p className="text-sm font-medium text-slate-500 text-right">{card.homework.description}</p>
+                        <p className="text-sm font-medium text-slate-500 lg:text-right">{card.homework.description}</p>
                     )}
                 </div>
             </div>
@@ -532,7 +542,7 @@ function HomeworkTableTeacherCard({card, serverURI,index=0}:Readonly<{card:any, 
 
             <TableCell className="flex items-center gap-2">
                 <Avatar>
-                    <AvatarImage src={card.student.avatar} />
+                    <AvatarImage src={serverURI.slice(0, -1)+card.student.avatar} />
                     <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
                 </Avatar>
 
