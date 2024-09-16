@@ -9,9 +9,9 @@ import AppHeader from "@/components/app/misc/AppHeader";
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { format } from "date-fns";
+import { HeartHandshake } from "lucide-react";
 
 export const meta: MetaFunction = () => {
     return [
@@ -39,7 +39,17 @@ export async function action({request}:ActionFunctionArgs){
     }).then( res => res.json() ).then( async (data_res:any) => {
 
         if (data_res.detail){
-            throw new Error(data_res.detail);
+            if (data_res.detail!="No courses found for this student."){
+                throw new Error(data_res.detail);
+            }
+            else{
+                return ({
+                    error: true,
+                    data: null,
+                    serverURI : process.env.SERVER_HOST,
+                    user_data: cookie.user_data
+                })
+            }
         }else{
             return ({
                 error: false,
@@ -107,70 +117,88 @@ export default function ActivityPage() {
                 <div className="flex flex-col gap-6">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader subtitle="Тут ви знайдете інформацію по студентам" title={`Всі студенти`}/>
+                    <AppHeader subtitle="Тут ви знайдете інформацію про активність" title={`Активність`}/>
 
                     {actioin_data && (
-                    <div className="flex items-center flex-col gap-4 px-4 lg:px-0">
-                        <div className=" block-size">
+                    <>
+                    {actioin_data.data ? (
+                        <div className="flex items-center flex-col gap-4 px-4 lg:px-0">
+                            <div className=" block-size">
 
-                            <div className="flex items-center gap-2">
-                                <Label>Курс:</Label>
-                                <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Оберіть" />
-                                    </SelectTrigger>
-                                    <SelectContent>
+                                <div className="flex items-center gap-2">
+                                    <Label>Курс:</Label>
+                                    <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Оберіть" />
+                                        </SelectTrigger>
+                                        <SelectContent>
 
-                                        {actioin_data.data.courses.map( (course:any,index:number) => (
-                                            <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
-                                        ) )}
-                                        
-                                    </SelectContent>
-                                </Select>
+                                            {actioin_data.data.courses.map( (course:any,index:number) => (
+                                                <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
+                                            ) )}
+                                            
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
                             </div>
 
+                            <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
+                                {actioin_data.data && ( 
+                                <>
+                                    {actioin_data.data.current_course.lessons.map( (lesson:any,index:number) => (
+                                        <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
+
+                                            <div className="flex gap-2 items-baseline">
+                                                <p className=" text-sm text-slate-500 font-light">Назва:</p>
+                                                <p className=" text-sm text-slate-900 font-medium">{lesson.title}</p>
+                                            </div>
+
+                                            <div className="flex gap-2 items-baseline">
+                                                <p className=" text-sm text-slate-500 font-light">Дата:</p>
+                                                <p className=" text-sm text-slate-900 font-medium">{ lesson.lesson_date && (format(lesson.lesson_date,"dd.MM.yyyy") )}</p>
+                                            </div>
+
+                                            <div className="flex gap-2 items-baseline">
+                                                <p className=" text-sm text-slate-500 font-light">Оцінка на заняті:</p>
+                                                <p className=" text-sm text-green-600 font-bold">{lesson.grade_on_lesson}</p>
+                                            </div>
+
+                                            <div className="flex gap-2 items-baseline">
+                                                <p className=" text-sm text-slate-500 font-light">Оцінка за домашню роботу:</p>
+                                                <p className=" text-sm text-violet-600 font-bold">{lesson.homework_grade}</p>
+                                            </div>
+
+                                            <div className="flex gap-2 items-baseline">
+                                                <p className=" text-sm text-slate-500 font-light">Відвідування:</p>
+                                                <p className=" text-sm text-slate-900 font-medium">{lesson.is_present ? ( lesson.is_late ?
+                                                    (<Badge variant={"secondary"}>Запізнився</Badge>) :
+                                                    (<Badge>Присутний</Badge>) ) :
+                                                    (<Badge variant={"destructive"}>Відсутній</Badge>)}
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    ) )}
+                                </> )}
+                            </div>
                         </div>
+                    ) : (
+                        <div className="flex items-center flex-col gap-4 px-4 lg:px-0">
+                            <div className=" block-size">
 
-                        <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
-                            {actioin_data.data && ( 
-                            <>
-                                {actioin_data.data.current_course.lessons.map( (lesson:any,index:number) => (
-                                    <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
+                                <Alert>
+                                    <HeartHandshake className="size-4 !text-green-600" />
+                                    <AlertTitle>Нема завдань на виконання!</AlertTitle>
+                                    <AlertDescription>
+                                        Вау! В це важко повірити, але у вас нема завдань на перевірку. Так тримати!
+                                    </AlertDescription>
+                                </Alert> 
 
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Назва:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{lesson.title}</p>
-                                        </div>
-
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Дата:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{ lesson.lesson_date && (format(lesson.lesson_date,"dd.MM.yyyy") )}</p>
-                                        </div>
-
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Оцінка на заняті:</p>
-                                            <p className=" text-sm text-green-600 font-bold">{lesson.grade_on_lesson}</p>
-                                        </div>
-
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Оцінка за домашню роботу:</p>
-                                            <p className=" text-sm text-violet-600 font-bold">{lesson.homework_grade}</p>
-                                        </div>
-
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Відвідування:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{lesson.is_present ? ( lesson.is_late ?
-                                                (<Badge variant={"secondary"}>Запізнився</Badge>) :
-                                                (<Badge>Присутний</Badge>) ) :
-                                                (<Badge variant={"destructive"}>Відсутній</Badge>)}
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                ) )}
-                            </> )}
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    </>
                     )}
                 </div>
             )}

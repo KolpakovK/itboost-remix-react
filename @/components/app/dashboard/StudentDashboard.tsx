@@ -35,8 +35,8 @@ export default function StudentDashboard({average_mark,homeworks,lesson_in_month
         },
         {
             title       :"Відвідування",
-            value       :Math.floor((lesson_visited.visited/lesson_visited.all)*100),
-            decoration  :"%",
+            value       :lesson_visited.all ? (Math.floor((lesson_visited.visited/lesson_visited.all)*100)) : ("-"),
+            decoration  :lesson_visited.all ? "%" : "",
             icon        :<CalendarCheck className=" text-yellow-800" size={24}/>,
             color       :"#FEEDCB"
         },

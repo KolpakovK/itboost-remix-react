@@ -109,60 +109,68 @@ export default function MaterialPage() {
                     <AppHeader subtitle="Тут ви знайдете інформацію по студентам" title={`Всі студенти`}/>
 
                     {actioin_data && (
-                    <div className="flex items-center flex-col gap-4 px-4 lg:px-0 pb-20 lg:pb-0">
-                        <div className=" block-size">
+                        <>
+                            {actioin_data.data.students && (
+                                <div className="flex items-center flex-col gap-4 px-4 lg:px-0 pb-20 lg:pb-0">
+                                    <div className=" block-size">
 
-                            <div className="flex items-center gap-2">
-                                <Label>Группа:</Label>
-                                <Select defaultValue={actioin_data.data.students.id} onValueChange={ (v:string) => updateSelectedGroup(v) }>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Оберіть" />
-                                    </SelectTrigger>
-                                    <SelectContent>
+                                        <div className="flex items-center gap-2">
+                                            
+                                            <Label>Группа:</Label>
+                                            
+                                            <Select defaultValue={actioin_data.data.students.id} onValueChange={ (v:string) => updateSelectedGroup(v) }>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder="Оберіть" />
+                                                </SelectTrigger>
+                                                <SelectContent>
 
-                                        {actioin_data.data.groups.map( (group:any,index:number) => (
-                                            <SelectItem key={index} value={group.id}>{group.title}</SelectItem>
-                                        ) )}
-                                        
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                                    {actioin_data.data.groups.map( (group:any,index:number) => (
+                                                        <SelectItem key={index} value={group.id}>{group.title}</SelectItem>
+                                                    ) )}
+                                                    
+                                                </SelectContent>
+                                            </Select>
+                                            
 
-                        </div>
-
-                        <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
-                            {actioin_data.data && ( 
-                            <>
-                                {actioin_data.data.students.students.map( (student:any,index:number) => (
-                                    <div className="p-4 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
-                                        <div className="flex flex-col gap-2">
-                                            <Avatar>
-                                                <AvatarImage src={static_data.serverURI.slice(0, -1)+student.avatar} />
-                                                <AvatarFallback>{`${student.first_name[0]}${student.last_name[0]}`}</AvatarFallback>
-                                            </Avatar>
-
-                                            <p className="text-lg text-slate-900">{`${student.first_name} ${student.last_name}`}</p>
                                         </div>
 
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Вік:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{student.age}</p>
-                                        </div>
-
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Номер телефона:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{student.phone_number}</p>
-                                        </div>
-
-                                        <div className="flex gap-2 items-baseline">
-                                            <p className=" text-sm text-slate-500 font-light">Пошта:</p>
-                                            <p className=" text-sm text-slate-900 font-medium">{student.email}</p>
-                                        </div>
                                     </div>
-                                ) )}
-                            </> )}
-                        </div>
-                    </div>
+
+                                    <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
+                                        {actioin_data.data && ( 
+                                        <>
+                                            {actioin_data.data.students.students.map( (student:any,index:number) => (
+                                                <div className="p-4 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
+                                                    <div className="flex flex-col gap-2">
+                                                        <Avatar>
+                                                            <AvatarImage src={static_data.serverURI.slice(0, -1)+student.avatar} />
+                                                            <AvatarFallback>{`${student.first_name[0]}${student.last_name[0]}`}</AvatarFallback>
+                                                        </Avatar>
+
+                                                        <p className="text-lg text-slate-900">{`${student.first_name} ${student.last_name}`}</p>
+                                                    </div>
+
+                                                    <div className="flex gap-2 items-baseline">
+                                                        <p className=" text-sm text-slate-500 font-light">Вік:</p>
+                                                        <p className=" text-sm text-slate-900 font-medium">{student.age}</p>
+                                                    </div>
+
+                                                    <div className="flex gap-2 items-baseline">
+                                                        <p className=" text-sm text-slate-500 font-light">Номер телефона:</p>
+                                                        <p className=" text-sm text-slate-900 font-medium">{student.phone_number}</p>
+                                                    </div>
+
+                                                    <div className="flex gap-2 items-baseline">
+                                                        <p className=" text-sm text-slate-500 font-light">Пошта:</p>
+                                                        <p className=" text-sm text-slate-900 font-medium">{student.email}</p>
+                                                    </div>
+                                                </div>
+                                            ) )}
+                                        </> )}
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             )}

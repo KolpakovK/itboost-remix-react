@@ -108,45 +108,49 @@ export default function MaterialPage() {
                     <AppHeader subtitle="Тут ви знайдете всі актуальні матеріали" title={`Матеріали для занять`} />
 
                     {actioin_data && (
-                    <div className="flex items-center flex-col gap-4 px-4 lg:px-0 pb-20 lg:pb-0">
-                        <div className=" block-size">
+                    <>
+                        {actioin_data.data.current_course && (
+                        <div className="flex items-center flex-col gap-4 px-4 lg:px-0 pb-20 lg:pb-0">
+                            <div className=" block-size">
 
-                            <div className="flex items-center gap-2">
-                                <Label>Матеріал:</Label>
-                                <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Оберіть" />
-                                    </SelectTrigger>
-                                    <SelectContent>
+                                <div className="flex items-center gap-2">
+                                    <Label>Матеріал:</Label>
+                                    <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Оберіть" />
+                                        </SelectTrigger>
+                                        <SelectContent>
 
-                                        {actioin_data.data.courses.map( (course:any,index:number) => (
-                                            <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
-                                        ) )}
-                                        
-                                    </SelectContent>
-                                </Select>
+                                            {actioin_data.data.courses.map( (course:any,index:number) => (
+                                                <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
+                                            ) )}
+                                            
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
                             </div>
 
+                            <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
+                                {actioin_data.data && ( 
+                                <>
+                                    {actioin_data.data.current_course.materials.map( (material:any,index:number) => (
+                                        <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
+                                            <Badge variant={"secondary"} className="w-fit">{index+1}</Badge>
+                                            <p className="text-xs text-slate-500 uppercase tracking-wider">{material.title}</p>
+                                            <p className=" text-slate-900">{material.desc}</p> 
+                                            {material.pdf_file && (
+                                                <Button size={"sm"} className="w-fit" asChild>
+                                                    <a href={`${actioin_data.serverURI.slice(0, -1)}${material.pdf_file}`} target="_blank" download>Завантажити</a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                    ) )}
+                                </> )}
+                            </div>
                         </div>
-
-                        <div className="block-size grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-6">
-                            {actioin_data.data && ( 
-                            <>
-                                {actioin_data.data.current_course.materials.map( (material:any,index:number) => (
-                                    <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
-                                        <Badge variant={"secondary"} className="w-fit">{index+1}</Badge>
-                                        <p className="text-xs text-slate-500 uppercase tracking-wider">{material.title}</p>
-                                        <p className=" text-slate-900">{material.desc}</p> 
-                                        {material.pdf_file && (
-                                            <Button size={"sm"} className="w-fit" asChild>
-                                                <a href={`${actioin_data.serverURI.slice(0, -1)}${material.pdf_file}`} target="_blank" download>Завантажити</a>
-                                            </Button>
-                                        )}
-                                    </div>
-                                ) )}
-                            </> )}
-                        </div>
-                    </div>
+                        )}
+                    </>
                     )}
                 </div>
             )}

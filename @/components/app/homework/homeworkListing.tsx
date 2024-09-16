@@ -86,42 +86,42 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                     </div>
                     ) : (
                         <div className="flex flex-col gap-2">
-                            {allHomeworks.courses.length && (
-                            <div className="flex items-center gap-2">
-                                <Label>Курс:</Label>
-                                <Select defaultValue={allHomeworks.courses[0].id} onValueChange={ (v:string) => getHomeworksByCourse(v) }>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Оберіть" />
-                                    </SelectTrigger>
-                                    <SelectContent>
+                            {allHomeworks.courses.length!=0 && (
+                                <div className="flex items-center gap-2">
+                                    <Label>Курс:</Label>
+                                    <Select defaultValue={allHomeworks.courses[0].id} onValueChange={ (v:string) => getHomeworksByCourse(v) }>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Оберіть" />
+                                        </SelectTrigger>
+                                        <SelectContent>
 
-                                        {allHomeworks.courses.map( (course:any,index:number) => (
-                                            <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
-                                        ) )}
-                                        
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                            {allHomeworks.courses.map( (course:any,index:number) => (
+                                                <SelectItem key={index} value={course.id}>{course.title}</SelectItem>
+                                            ) )}
+                                            
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             )}
 
-                            {allHomeworks.courses.length && (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[60px]">#</TableHead>
-                                        <TableHead>Урок</TableHead>
-                                        <TableHead>Завдання</TableHead>
-                                        <TableHead>Викладач</TableHead>
-                                        <TableHead>Дата створення ДЗ</TableHead>
-                                        <TableHead className="w-[120px] text-right">Оцінка</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {allHomeworks.homeworks.map( (homework:any,index:number) => (
-                                        <HomeworkStudentTableCard serverURI={server} card={homework} key={index} index={index}/>
-                                    ) )}
-                                </TableBody>
-                            </Table>
+                            {allHomeworks.courses.length!=0 && (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-[60px]">#</TableHead>
+                                            <TableHead>Урок</TableHead>
+                                            <TableHead>Завдання</TableHead>
+                                            <TableHead>Викладач</TableHead>
+                                            <TableHead>Дата створення ДЗ</TableHead>
+                                            <TableHead className="w-[120px] text-right">Оцінка</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {allHomeworks.homeworks.map( (homework:any,index:number) => (
+                                            <HomeworkStudentTableCard serverURI={server} card={homework} key={index} index={index}/>
+                                        ) )}
+                                    </TableBody>
+                                </Table>
                             )}
                         </div>
                     )}
@@ -321,8 +321,9 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                     submit({type:"getHomework"},{method:"POST"})
                 }
                 if (action_data.type=="all"){
-                    if (selectedGroupId=="") setSelectedGroupId(action_data.data.groups[0].id)
-
+                    if (action_data.data.groups.length!=0){
+                        if (selectedGroupId=="") setSelectedGroupId(action_data.data.groups[0].id)
+                    }
                     setSelectedGroupIndex(0)
                     setAllHomeworks(action_data.data);
                 }
@@ -374,7 +375,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                     ) : (
                         <div className="flex flex-col gap-2">
                             {/* all homeworks */}
-                            {allHomeworks.groups.length && (
+                            {allHomeworks.groups.length!=0 && (
                                 <div className="flex items-center gap-4 w-full overflow-scroll">
                                     <div className="flex items-center gap-2">
                                         <Label>Група:</Label>
@@ -411,6 +412,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                                 </div>
                             )}
 
+                            {allHomeworks.groups.length!=0 && (
                             <Table className=" overflow-scroll">
                                 <TableHeader>
                                     <TableRow>
@@ -429,6 +431,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                                     ) )}
                                 </TableBody>
                             </Table>
+                            )}
 
                         </div>
                     )}
