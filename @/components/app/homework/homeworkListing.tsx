@@ -41,7 +41,6 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
 
     useEffect( () => {
         if (action_data){
-            console.log(action_data);
             if (action_data.type){
                 if (action_data.type=="to-do"){
                     setHomeworksToDo([...action_data.data]);
@@ -113,7 +112,7 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                                             <TableHead>Завдання</TableHead>
                                             <TableHead>Викладач</TableHead>
                                             <TableHead>Дата створення ДЗ</TableHead>
-                                            <TableHead className="w-[120px] text-right">Оцінка</TableHead>
+                                            <TableHead className="w-[200px] text-right">Оцінка</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -311,7 +310,6 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
 
     useEffect( () => {
         if (action_data){
-            console.log(action_data);
             if (action_data.type){
                 if (action_data.type=="to-do"){
                     setHomeworksToDo([...action_data.data]);
@@ -376,7 +374,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                         <div className="flex flex-col gap-2">
                             {/* all homeworks */}
                             {allHomeworks.groups.length!=0 && (
-                                <div className="flex items-center gap-4 w-full overflow-scroll">
+                                <div className="flex items-center gap-4 w-full overflow-scroll lg:overflow-hidden">
                                     <div className="flex items-center gap-2">
                                         <Label>Група:</Label>
                                         <Select defaultValue={allHomeworks.groups[0].id} onValueChange={ (v:string) => getHomeworksByGroup(v) }>
@@ -422,7 +420,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                                         <TableHead className="w-[100px]">Примітка</TableHead>
                                         <TableHead>Завдання</TableHead>
                                         <TableHead>Робота</TableHead>
-                                        <TableHead className="w-[120px] text-right">Оцінка</TableHead>
+                                        <TableHead className="w-[200px] text-right">Оцінка</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>

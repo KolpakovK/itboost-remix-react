@@ -22,7 +22,6 @@ export const meta: MetaFunction = () => {
 
 export async function action({request}:ActionFunctionArgs){
     const body:any = await request.formData().then( (data:any) => { return data }).catch( error => null);
-    if (body) console.log(body.get("id"));
 
     const cookieHeader = request.headers.get("Cookie");
     const cookie = (await userCookie.parse(cookieHeader)) || null;
@@ -100,13 +99,8 @@ export default function ActivityPage() {
         }
     }, [static_data])
 
-    useEffect( () => {
-        console.log(actioin_data)
-    }, [actioin_data] )
-
 
     function updateSelectedCourse(id:string){
-        console.log(id)
         submit({id:id},{method:"POST"});
     }
     
@@ -171,11 +165,11 @@ export default function ActivityPage() {
 
                                             <div className="flex gap-2 items-baseline">
                                                 <p className=" text-sm text-slate-500 font-light">Відвідування:</p>
-                                                <p className=" text-sm text-slate-900 font-medium">{lesson.is_present ? ( lesson.is_late ?
+                                                <div className=" text-sm text-slate-900 font-medium">{lesson.is_present ? ( lesson.is_late ?
                                                     (<Badge variant={"secondary"}>Запізнився</Badge>) :
                                                     (<Badge>Присутний</Badge>) ) :
                                                     (<Badge variant={"destructive"}>Відсутній</Badge>)}
-                                                </p>
+                                                </div>
                                             </div>
 
                                         </div>

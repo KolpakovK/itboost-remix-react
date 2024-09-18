@@ -5,10 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 
-function getInitials(fullName:string) {
-    const initials = fullName.match(/\b\w/g) || []; // \b - граница слова, \w - любой буквенный символ
-    return ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
-}
 
 const _navigation_items:any = {
     student:[
@@ -103,8 +99,8 @@ export default function AppNavigation({ role,name,surname,avatar="",serverURI=""
                     <DropdownMenu>
                         <DropdownMenuTrigger>
                             <Avatar>
-                                <AvatarImage src={serverURI.slice(0, -1)+avatar} />
-                                <AvatarFallback>{getInitials(`${name} ${surname}`)}</AvatarFallback>
+                                <AvatarImage src={avatar ? (serverURI.slice(0, -1)+avatar) : ("")} />
+                                <AvatarFallback>{`${name[0]}${surname[0]}`}</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>

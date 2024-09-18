@@ -26,7 +26,6 @@ export async function action({
         if (data_res.detail){
             throw new Error(data_res.detail);
         }else{
-            console.log(data_res);
 
             return json({
                 error: false,

@@ -32,7 +32,6 @@ export async function action({ request }:ActionFunctionArgs){
         if (data_res.detail){
             throw new Error(data_res.detail);
         }else{
-            console.log(data_res)
 
             return ({
                 error: false,

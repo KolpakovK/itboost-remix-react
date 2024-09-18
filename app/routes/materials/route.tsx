@@ -20,7 +20,6 @@ export const meta: MetaFunction = () => {
 
 export async function action({request}:ActionFunctionArgs){
     const body:any = await request.formData().then( (data:any) => { return data }).catch( error => null);
-    if (body) console.log(body.get("id"));
 
     const cookieHeader = request.headers.get("Cookie");
     const cookie = (await userCookie.parse(cookieHeader)) || null;
@@ -88,9 +87,6 @@ export default function MaterialPage() {
         }
     }, [static_data])
 
-    useEffect( () => {
-        console.log(actioin_data)
-    }, [actioin_data] )
 
 
     function updateSelectedCourse(id:string){

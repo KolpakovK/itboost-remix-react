@@ -131,7 +131,6 @@ export async function action({ request }:ActionFunctionArgs){
             },
             body:data
         }).then( res => res.json() ).then( async (data_res:any) => {
-            console.log(data_res)
             if (data_res.detail){
                 if (data_res.detail=="Given token not valid for any token type") throw new Error(data_res.detail);
                 return {
@@ -158,7 +157,6 @@ export async function action({ request }:ActionFunctionArgs){
     }
 
     if (data.get("type")=="setMark"){
-        console.log("MARK");
         
         response = await fetch(`${process.env.SERVER_HOST}education/submission/set_mark/`,{
             method:"POST",
@@ -167,7 +165,6 @@ export async function action({ request }:ActionFunctionArgs){
             },
             body:data
         }).then( res => res.json() ).then( async (data_res:any) => {
-            console.log(data_res)
             if (data_res.detail){
                 if (data_res.detail=="Given token not valid for any token type") throw new Error(data_res.detail);
                 return {

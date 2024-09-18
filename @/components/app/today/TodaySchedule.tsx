@@ -70,7 +70,7 @@ export default function TodaySchedule(){
         <div className="flex justify-center px-4 lg:px-0">
             <div className="block-size flex flex-col gap-6">
                 {(!isLoading) && (
-                    <Tabs className="w-full overflow-scroll" defaultValue="0" onValueChange={ (v:string) => setSelectedLesson(parseInt(v)) }>
+                    <Tabs className="w-full overflow-scroll lg:overflow-hidden" defaultValue="0" onValueChange={ (v:string) => setSelectedLesson(parseInt(v)) }>
                         <TabsList>
                             {static_data.data.map( (item:any,index:number) => (
                                 <TabsTrigger key={index} value={`${index}`}>{`${item.course.title} - ${item.group.title}`}</TabsTrigger>
@@ -80,9 +80,9 @@ export default function TodaySchedule(){
                         {static_data.data.map( (item:any,index:number) => (
                             <TabsContent key={index} value={`${index}`}>
                                 <div className="flex flex-col gap-0 p-4 bg-white rounded-md border border-gray-200 shadow-sm w-full min-w-[550px]">
-                                    <div className="flex justify-between items-end">
+                                    <div className="flex justify-between items-end pb-6">
                                         {hasTheme ? (
-                                            <div className="flex gap-4 items-end pb-6">
+                                            <div className="flex gap-4 items-end">
                                                 <div className="flex flex-col gap-1">
                                                     <p className="text-sm text-gray-500">Тема урока</p>
                                                     <p className="text-lg lg:text-3xl text-gray-900 font-medium">{item.title}</p>
@@ -90,8 +90,8 @@ export default function TodaySchedule(){
                                                 <Button variant={"outline"} size={"icon"} onClick={ () => setHasTheme(false) }><Edit size={20}/></Button>
                                             </div>
                                         ) : (
-                                            <Form action="/today" method="post" className="flex gap-4 items-end pb-6">
-                                                <Input className=" hidden" name="lesson_id" value={item.id}/>
+                                            <Form action="/today" method="post" className="flex gap-4 items-end">
+                                                <Input className=" hidden" name="lesson_id" value={item.id} readOnly/>
                                                 <div className="flex flex-col gap-1">
                                                     <p className="text-sm text-gray-500">Тема урока</p>
                                                     <Input type="text" name="lesson_theme" className=" min-w-[250px]"/>
@@ -100,13 +100,15 @@ export default function TodaySchedule(){
                                             </Form>
                                         )}
 
-                                        <UploadHomeWork lesson={item.id}/>
+                                        <div className={hasTheme ? ("") : ("opacity-50 pointer-events-none")}>
+                                            <UploadHomeWork lesson={item.id} lessonTitle={item.title}/>
+                                        </div>
                                     </div>
                                     
                                     {item.students.map( (student:any,studentIndex:number) => (
                                         <div key={studentIndex} className="flex items-center gap-2 py-3 border-b border-gray-200" style={ {opacity: hasTheme ? "1" : "0.5", pointerEvents: hasTheme ? "all" : "none"} }>
                                             <Avatar>
-                                                <AvatarImage src={static_data.serverURI.slice(0, -1)+student.avatar}/>
+                                                <AvatarImage src={student.avatar ? (static_data.serverURI.slice(0, -1)+student.avatar) : ("")}/>
                                                 <AvatarFallback>{`${student.first_name[0]}${student.last_name[0]}`}</AvatarFallback>
                                             </Avatar>
                                             <p className="text-sm lg:text-md text-gray-900 flex-1">

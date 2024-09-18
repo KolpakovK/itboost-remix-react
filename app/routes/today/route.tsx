@@ -9,8 +9,6 @@ import TodaySchedule from "@/components/app/today/TodaySchedule";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertOctagon } from "lucide-react";
 
-import { createWriteStream } from "fs";
-import path from "path";
 
 import { useToast } from "@/components/ui/use-toast"
 
@@ -110,7 +108,6 @@ export async function action({ request }:ActionFunctionArgs){
                     data:data_res.detail
                 }
             }else{
-                console.log(data_res);
                 return {
                     error:false,
                     data:data_res
@@ -145,7 +142,6 @@ export async function action({ request }:ActionFunctionArgs){
                     data:data_res.detail
                 }
             }else{
-                console.log(data_res);
                 return {
                     error:false,
                     type:"toast",

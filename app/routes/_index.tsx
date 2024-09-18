@@ -33,7 +33,6 @@ export async function loader({ request }:LoaderFunctionArgs){
         if (data_res.detail){
             throw new Error(data_res.detail);
         }else{
-            console.log(data_res);
 
             return ({
                 error: false,

@@ -10,7 +10,7 @@ import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 
-export default function UploadHomeWork({lesson}:Readonly<{lesson:number}>){
+export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:number,lessonTitle:string}>){
     let action_data:any = useActionData();
 
     const [isOpened,setIsOpened]:any = useState(false);
@@ -49,12 +49,12 @@ export default function UploadHomeWork({lesson}:Readonly<{lesson:number}>){
                 </DialogHeader>
 
                 <Form method="POST" className="flex flex-col gap-8" encType="multipart/form-data">
-                    <input type="text" readOnly name="lesson" value={lesson} className=" hidden"/>
-                    <input type="text" readOnly name="type" value={"uploadHomeWork"} className=" hidden"/>
+                    <input type="text" readOnly name="lesson" defaultValue={lesson} className=" hidden"/>
+                    <input type="text" readOnly name="type" defaultValue={"uploadHomeWork"} className=" hidden"/>
                     <div className="flex flex-col gap-6">
                         <div className="flex flex-col gap-2">
                             <Label>Тема</Label>
-                            <Input type="text" name="title"/>
+                            <Input type="text" name="title" defaultValue={lessonTitle}/>
                         </div>
 
                         <div className="flex flex-col gap-2">
