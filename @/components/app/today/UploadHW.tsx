@@ -9,6 +9,7 @@ import { useActionData } from "@remix-run/react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
+import { ua } from "~/routes/translation"
 
 export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:number,lessonTitle:string}>){
     let action_data:any = useActionData();
@@ -39,13 +40,11 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
  
     return (
         <Dialog open={isOpened} onOpenChange={(open:boolean) => setIsOpened(open)}>
-            <DialogTrigger asChild><Button variant={"secondary"}>Домашня робота</Button></DialogTrigger>
+            <DialogTrigger asChild><Button variant={"secondary"}>{ua.today.uploadHW.trigger}</Button></DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Завантажити роботу</DialogTitle>
-                    <DialogDescription>
-                        Введіть тему, додайте опис та завантажте файл на перевірку.
-                    </DialogDescription>
+                    <DialogTitle>{ua.today.uploadHW.title}</DialogTitle>
+                    <DialogDescription>{ua.today.uploadHW.description}</DialogDescription>
                 </DialogHeader>
 
                 <Form method="POST" className="flex flex-col gap-8" encType="multipart/form-data">
@@ -53,29 +52,29 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
                     <input type="text" readOnly name="type" defaultValue={"uploadHomeWork"} className=" hidden"/>
                     <div className="flex flex-col gap-6">
                         <div className="flex flex-col gap-2">
-                            <Label>Тема</Label>
+                            <Label>{ua.today.uploadHW.fields.theme}</Label>
                             <Input type="text" name="title" defaultValue={lessonTitle}/>
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <Label>Опис</Label>
+                            <Label>{ua.today.uploadHW.fields.description}</Label>
                             <Textarea name="description"/>
                         </div>
 
                         <div className="flex flex-col gap-2 relative">
-                            <Label>Виповнити до</Label>
+                            <Label>{ua.today.uploadHW.fields.dueDate}</Label>
                             <Input type="date" name="due_date"/>
                         </div>
 
                         <div className="flex flex-col gap-2 relative">
-                            <Label>Файл</Label>
+                            <Label>{ua.today.uploadHW.fields.file}</Label>
                             <Input onChange={ (e:any) => onFileSelectedHandler(e) } type="file" name="homework_file"/>
-                            <p className=" text-sm text-gray-500">Файл не повинен бути більше ніж 5 мегабайт</p>
+                            <p className=" text-sm text-gray-500">{ua.today.uploadHW.fields.fileHint}</p>
                         </div>
                     </div>
 
                     <div className={cn( !fileIsAllowed && " pointer-events-none opacity-50" )}>
-                        <Button>Завантажити</Button>
+                        <Button>{ua.today.uploadHW.fields.submit}</Button>
                     </div>
                 </Form>
 

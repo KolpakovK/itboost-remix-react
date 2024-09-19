@@ -8,12 +8,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { GraduationCap, AlertOctagon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
+import { ua } from "~/routes/translation";
 
 export default function TeacherDashboard({homeworks_count,future_lessons}:Readonly<{homeworks_count:number,future_lessons:any[]}>){
 
     const _cards = [
         {
-            title       :"Домашні завдання",
+            title       :ua.dashboard.teacher.cards[0],
             value       :homeworks_count,
             decoration  :null,
             icon        :<GraduationCap className=" text-orange-800" size={24}/>,
@@ -31,17 +32,15 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
             </div>
 
             <div className="block-size p-3 lg:p-4 bg-white rounded-md border border-gray-200 shadow-sm flex flex-col gap-4 min-h-[450px]">
-                <p className="text-sm text-gray-500">Графік занять на наступні 2 тижні</p>
+                <p className="text-sm text-gray-500">{ua.dashboard.teacher.scheduleLabel}</p>
 
                 {future_lessons && (
                     <div className="flex flex-col gap-2">
                         {!future_lessons.length && (
                             <Alert>
                                 <AlertOctagon className="size-4 !text-yellow-600" />
-                                <AlertTitle>У вас в графіку нема занять!</AlertTitle>
-                                <AlertDescription>
-                                    Якщо ви впевнені, що у вас є назначені заняття - зверніться до адміністрації.
-                                </AlertDescription>
+                                <AlertTitle>{ua.dashboard.teacher.alert.title}</AlertTitle>
+                                <AlertDescription> {ua.dashboard.teacher.alert.description} </AlertDescription>
                             </Alert>                          
                         )}
 

@@ -11,4 +11,60 @@
     .card-padding{
         @apply pr-4;
     }
+
+    .bard-body{
+        @apply flex justify-center px-4 lg:px-0;
+    }
+
+    .bard-content{
+        @apply w-full sm:max-w-screen-sm md:max-w-screen-sm lg:max-w-screen-sm xl:max-w-screen-md 2xl:max-w-screen-md flex flex-col gap-2;
+    }
+
+    .bard-content h1{
+        @apply text-5xl font-bold text-slate-900 leading-tight font-display;
+    }
+
+    .bard-content h2{
+        @apply text-3xl font-bold text-slate-900 leading-tight;
+    }
+
+    .bard-content h3{
+        @apply text-2xl font-bold text-slate-900 leading-tight;
+    }
+
+    .bard-content h4{
+        @apply text-xl font-bold text-slate-900 leading-tight;
+    }
+
+    .bard-content p{
+        @apply text-base text-slate-600 leading-normal;
+    }
+
+    .bard-content img{
+        @apply w-full rounded-lg;
+    }
+
+    .bard-content a{
+        @apply text-violet-500 no-underline hover:underline
+    }
+
+    .bard-content li{
+        @apply text-base text-slate-600 leading-normal;
+    }
+
+    .bard-content ul,ol{
+        @apply list-inside;
+    }
+
+    .bard-content ol{
+        @apply list-decimal;
+    }
+
+    .bard-content ul{
+        @apply list-disc;
+    }
+    
+    .bard-content blockquote{
+        @apply pl-4 py-2 border-l border-violet-500
+    }
 }

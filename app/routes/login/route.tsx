@@ -10,6 +10,8 @@ export const meta: MetaFunction = () => {
 
 import { LoginForm } from "@/components/login/LoginForm";
 
+import { ua } from "../translation";
+
 export async function action({
     request,
 }: ActionFunctionArgs) {
@@ -29,7 +31,7 @@ export async function action({
 
             return json({
                 error: false,
-                message: `Привіт, ${data_res.user_data.first_name}`,
+                message: `${ua.login.toast} ${data_res.user_data.first_name}`,
             },{
                 headers: {
                     "Set-Cookie": await userCookie.serialize(data_res),
@@ -62,14 +64,14 @@ export default function LoginPage() {
                     
                     <div className="flex flex-col gap-6 lg:gap-8">
                         <div className="flex flex-col gap-0">
-                            <p className="text-sm lg:text-lg text-gray-500 leading-tight">Увійдіть до кабінету щоб розпочати роботу</p>
-                            <h1 className="font-display text-4xl lg:text-6xl text-gray-950 leading-tight">Навчальна платформа <span className='text-violet-500'>ITBoost</span></h1>
+                            <p className="text-sm lg:text-lg text-gray-500 leading-tight">{ua.login.greating}</p>
+                            <h1 className="font-display text-4xl lg:text-6xl text-gray-950 leading-tight">{ua.login.headline[0]} <span className='text-violet-500'>{ua.login.headline[1]}</span></h1>
                         </div>
                         
                         <LoginForm/>
                     </div>
                     
-                    <p>Some links</p>
+                    <p className=" text-sm text-slate-500">{ua.login.legal[0]} <a href="/legal" className=" text-violet-500">{ua.login.legal[1]}</a></p>
                 </div>
             </div>
             

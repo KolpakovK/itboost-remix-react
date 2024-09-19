@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import UploadHomeWork from "./UploadHW";
 
-
+import { ua } from "~/routes/translation";
 
 export default function TodaySchedule(){
     let submit = useSubmit();
@@ -84,7 +84,7 @@ export default function TodaySchedule(){
                                         {hasTheme ? (
                                             <div className="flex gap-4 items-end">
                                                 <div className="flex flex-col gap-1">
-                                                    <p className="text-sm text-gray-500">Тема урока</p>
+                                                    <p className="text-sm text-gray-500">{ua.today.schedule.theme}</p>
                                                     <p className="text-lg lg:text-3xl text-gray-900 font-medium">{item.title}</p>
                                                 </div>
                                                 <Button variant={"outline"} size={"icon"} onClick={ () => setHasTheme(false) }><Edit size={20}/></Button>
@@ -93,10 +93,10 @@ export default function TodaySchedule(){
                                             <Form action="/today" method="post" className="flex gap-4 items-end">
                                                 <Input className=" hidden" name="lesson_id" value={item.id} readOnly/>
                                                 <div className="flex flex-col gap-1">
-                                                    <p className="text-sm text-gray-500">Тема урока</p>
+                                                    <p className="text-sm text-gray-500">{ua.today.schedule.theme}</p>
                                                     <Input type="text" name="lesson_theme" className=" min-w-[250px]"/>
                                                 </div>
-                                                <Button type="submit" name="type" value="setTheme">Зберегти</Button>
+                                                <Button type="submit" name="type" value="setTheme">{ua.today.schedule.saveBtn}</Button>
                                             </Form>
                                         )}
 

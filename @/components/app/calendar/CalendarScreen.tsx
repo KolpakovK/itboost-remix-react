@@ -16,7 +16,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from '@/components/ui/badge'
 
 import { Calendar, UserCircle, Clock, Users } from 'lucide-react'
-  
 
 const eventsServicePlugin = createEventsServicePlugin();
 

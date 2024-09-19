@@ -14,6 +14,8 @@ import { useState, useEffect } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader } from "lucide-react"
 
+import { ua } from "~/routes/translation"
+
 const FormSchema = z.object({
     username: z.string().min(5, {
         message: "Мінімальна довжина - 5 символів",
@@ -37,7 +39,7 @@ export function LoginForm() {
 
         if (serverResponse){
             toast({
-                title:serverResponse.error ? "Помилка!" : "Успіх!",
+                title:serverResponse.error ? ua.loginForm.error : ua.loginForm.success,
                 description: serverResponse.message,
                 variant:serverResponse.error ? "destructive" : "default",
             })
@@ -67,7 +69,7 @@ export function LoginForm() {
                 <div className="flex flex-col gap-4">
                     <FormField control={form.control} name="username" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Ім'я користувача</FormLabel>
+                            <FormLabel>{ua.loginForm.username}</FormLabel>
                             <FormControl>
                                 <Input type="text" {...field} />
                             </FormControl>
@@ -77,12 +79,12 @@ export function LoginForm() {
 
                     <FormField control={form.control} name="password" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Пароль</FormLabel>
+                            <FormLabel>{ua.loginForm.password}</FormLabel>
                             <FormControl>
                                 <Input type="password" {...field} />
                             </FormControl>
                             <FormDescription>
-                                Забули пароль? Скористайтесь <a href="#" className="text-violet-500">посиланням</a> для його віддновлення.
+                                {ua.loginForm.forgotPassword[0]} <a href="#" className="text-violet-500">{ua.loginForm.forgotPassword[1]}</a> {ua.loginForm.forgotPassword[2]}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -90,7 +92,7 @@ export function LoginForm() {
                 </div>
 
 
-                <Button type="submit">{isLoading  ? (<Loader size={20}/>) : "Увійти"}</Button>
+                <Button type="submit">{isLoading  ? (<Loader size={20}/>) : ua.loginForm.submit}</Button>
             </form>
         </Form>
     )

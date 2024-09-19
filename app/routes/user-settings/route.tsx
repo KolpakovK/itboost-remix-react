@@ -1,16 +1,14 @@
 import type { MetaFunction, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useActionData, useLoaderData, useSubmit } from "@remix-run/react";
+import { Form, redirect, useActionData, useLoaderData } from "@remix-run/react";
 import { userCookie } from "~/utils/cookies";
+import { useToast } from "@/components/ui/use-toast"
 
 import { useState, useEffect } from "react";
 
 import AppNavigation from "@/components/app/navigation/Navigation";
 import AppHeader from "@/components/app/misc/AppHeader";
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +19,9 @@ export const meta: MetaFunction = () => {
         { name: "description", content: "Welcome to Remix!" },
     ];
 };
+
+import { ua } from "../translation";
+import { Loader } from "lucide-react";
 
 export async function action({request}:ActionFunctionArgs){
     const cookieHeader = request.headers.get("Cookie");
@@ -106,7 +107,8 @@ export default function MaterialPage() {
     let static_data:any = useLoaderData();
     let actioin_data:any = useActionData();
     const [isLoading,SetIsLoading] = useState(true);
-    const submit = useSubmit();
+    const [isSubmited,setIsSubmited] = useState(false);
+    const { toast } = useToast()
 
     useEffect( () => {
         SetIsLoading(false);
@@ -114,6 +116,13 @@ export default function MaterialPage() {
 
     useEffect( () => {
         console.log(actioin_data)
+        if (isSubmited){
+            setIsSubmited(false);
+            toast({
+                title:ua.settings.toast.title,
+                description: ua.settings.toast.description
+            })
+        }
     }, [actioin_data] )
 
 
@@ -125,7 +134,7 @@ export default function MaterialPage() {
                 <div className="flex flex-col gap-6 pb-20 lg:pb-0">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader subtitle="Налаштування" title={`Привіт, ${static_data.user_data.first_name}!`} />
+                    <AppHeader subtitle={ua.settings.pageSubtitle} title={`${ua.settings.pageName} ${static_data.user_data.first_name}!`} />
 
                     <div className="flex justify-center px-4 lg:px-0">
                         <div className="block-size flex justify-center">
@@ -148,51 +157,51 @@ export default function MaterialPage() {
                                 
                                 <div className="flex gap-6">
                                     <div className="flex flex-col w-full">
-                                        <p className=" text-sm text-slate-500">Ім'я</p>
+                                        <p className=" text-sm text-slate-500">{ua.settings.fields.name}</p>
                                         <p className=" text-lg text-slate-900 font-medium">
                                             {static_data.data.first_name} {static_data.data.last_name}
                                         </p>
                                     </div>
 
                                     <div className="flex flex-col w-full">
-                                        <p className=" text-sm text-slate-500">Роль</p>
+                                        <p className=" text-sm text-slate-500">{ua.settings.fields.role}</p>
                                         <Badge className="w-fit">{static_data.data.role}</Badge>
                                     </div>
                                 </div>
                                 
                                 {static_data.user_data.role=="student" && (
                                     <div className="flex flex-col w-full">
-                                        <p className=" text-sm text-slate-500">Вік</p>
+                                        <p className=" text-sm text-slate-500">{ua.settings.fields.age}</p>
                                         <p className=" text-lg text-slate-900 font-medium">
                                             {static_data.data.age}
                                         </p>
                                     </div>
                                 )}
 
-                                <Form className="flex flex-col gap-4" method="POST" encType="multipart/form-data">
+                                <Form onSubmit={ () => setIsSubmited(true) } className="flex flex-col gap-4" method="POST" encType="multipart/form-data">
                                     <div className="flex flex-col">
-                                        <p className=" text-sm text-slate-500">Фото</p>
+                                        <p className=" text-sm text-slate-500">{ua.settings.fields.photo}</p>
                                         <Input type="file" name="avatar"></Input>
                                     </div>
 
                                     <div className="flex flex-col">
-                                        <p className=" text-sm text-slate-500">Номер телефону</p>
+                                        <p className=" text-sm text-slate-500">{ua.settings.fields.phoneNumber}</p>
                                         <Input type="text" name="phone_number" defaultValue={static_data.data.phone_number}></Input>
                                     </div>
 
                                     <div className="flex flex-col">
-                                        <p className=" text-sm text-slate-500">Пошта</p>
+                                        <p className=" text-sm text-slate-500">{ua.settings.fields.mail}</p>
                                         <Input type="text" name="email" defaultValue={static_data.data.email}></Input>
                                     </div>
                                     
                                     {static_data.user_data.role=="teacher" && (
                                         <div className="flex flex-col">
-                                            <p className=" text-sm text-slate-500">БІО</p>
+                                            <p className=" text-sm text-slate-500">{ua.settings.fields.bio}</p>
                                             <Textarea name="bio" defaultValue={static_data.data.bio}></Textarea>
                                         </div>
                                     )}
 
-                                    <Button>Зберегти</Button>
+                                    <Button>{isLoading  ? (<Loader size={20}/>) : ua.settings.fields.submit}</Button>
                                 </Form>
                             
                             </div>

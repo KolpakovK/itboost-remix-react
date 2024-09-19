@@ -19,6 +19,8 @@ export const meta: MetaFunction = () => {
     ];
 };
 
+import { ua } from "../translation";
+
 export async function action({request}:ActionFunctionArgs){
     const body:any = await request.formData().then( (data:any) => { return data }).catch( error => null);
 
@@ -101,7 +103,7 @@ export default function MaterialPage() {
                 <div className="flex flex-col gap-6">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader subtitle="Тут ви знайдете інформацію по студентам" title={`Всі студенти`}/>
+                    <AppHeader subtitle={ua.allStudents.pageSubtitle} title={ua.allStudents.pageName}/>
 
                     {actioin_data && (
                         <>
@@ -111,7 +113,7 @@ export default function MaterialPage() {
 
                                         <div className="flex items-center gap-2">
                                             
-                                            <Label>Группа:</Label>
+                                            <Label>{ua.allStudents.filter}</Label>
                                             
                                             <Select defaultValue={actioin_data.data.students.id} onValueChange={ (v:string) => updateSelectedGroup(v) }>
                                                 <SelectTrigger className="w-[180px]">
@@ -138,7 +140,7 @@ export default function MaterialPage() {
                                                 <div className="p-4 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
                                                     <div className="flex flex-col gap-2">
                                                         <Avatar>
-                                                            <AvatarImage src={static_data.serverURI.slice(0, -1)+student.avatar} />
+                                                            <AvatarImage src={student.avatar ? (static_data.serverURI.slice(0, -1)+student.avatar) : ("")} />
                                                             <AvatarFallback>{`${student.first_name[0]}${student.last_name[0]}`}</AvatarFallback>
                                                         </Avatar>
 
@@ -146,18 +148,18 @@ export default function MaterialPage() {
                                                     </div>
 
                                                     <div className="flex gap-2 items-baseline">
-                                                        <p className=" text-sm text-slate-500 font-light">Вік:</p>
-                                                        <p className=" text-sm text-slate-900 font-medium">{student.age}</p>
+                                                        <p className=" text-sm text-slate-500 font-light">{ua.allStudents.card.age}</p>
+                                                        <p className=" text-sm text-slate-900 font-medium">{student.age ? student.age : "-"}</p>
                                                     </div>
 
                                                     <div className="flex gap-2 items-baseline">
-                                                        <p className=" text-sm text-slate-500 font-light">Номер телефона:</p>
-                                                        <p className=" text-sm text-slate-900 font-medium">{student.phone_number}</p>
+                                                        <p className=" text-sm text-slate-500 font-light">{ua.allStudents.card.phoneNumber}</p>
+                                                        <p className=" text-sm text-slate-900 font-medium">{student.phone_number ? student.phone_number : "-"}</p>
                                                     </div>
 
                                                     <div className="flex gap-2 items-baseline">
-                                                        <p className=" text-sm text-slate-500 font-light">Пошта:</p>
-                                                        <p className=" text-sm text-slate-900 font-medium">{student.email}</p>
+                                                        <p className=" text-sm text-slate-500 font-light">{ua.allStudents.card.mail}</p>
+                                                        <p className=" text-sm text-slate-900 font-medium">{student.email ? student.email : "-"}</p>
                                                     </div>
                                                 </div>
                                             ) )}

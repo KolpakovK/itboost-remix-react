@@ -8,33 +8,35 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 import { Badge as BadgeIcon, GraduationCap, CalendarCheck, CalendarSearch, AlertOctagon } from "lucide-react";
 
+import { ua } from "~/routes/translation";
+
 
 export default function StudentDashboard({average_mark,homeworks,lesson_in_month,lesson_visited,future_lessons}:Readonly<{average_mark:number,homeworks:number,lesson_in_month:number,lesson_visited:any,future_lessons:any[]}>){
 
     const _cards = [
         {
-            title       :"Оцінки",
+            title       :ua.dashboard.student.cards[0],
             value       :average_mark,
             decoration  :"/12",
             icon        :<BadgeIcon className=" text-violet-800" size={24}/>,
             color       :"#DBCBFE"
         },
         {
-            title       :"Домашні завдання",
+            title       :ua.dashboard.student.cards[1],
             value       :homeworks,
             decoration  :null,
             icon        :<GraduationCap className=" text-orange-800" size={24}/>,
             color       :"#FFD8CB"
         },
         {
-            title       :"Уроків на місяць",
+            title       :ua.dashboard.student.cards[2],
             value       :lesson_in_month,
             decoration  :null,
             icon        :<CalendarSearch className=" text-green-800" size={24}/>,
             color       :"#E0F6D4"
         },
         {
-            title       :"Відвідування",
+            title       :ua.dashboard.student.cards[3],
             value       :lesson_visited.all ? (Math.floor((lesson_visited.visited/lesson_visited.all)*100)) : ("-"),
             decoration  :lesson_visited.all ? "%" : "",
             icon        :<CalendarCheck className=" text-yellow-800" size={24}/>,
@@ -57,10 +59,8 @@ export default function StudentDashboard({average_mark,homeworks,lesson_in_month
                 {!future_lessons.length && (
                     <Alert>
                         <AlertOctagon className="size-4 !text-yellow-600" />
-                        <AlertTitle>У вас в графіку нема занять!</AlertTitle>
-                        <AlertDescription>
-                            Якщо ви впевнені, що у вас є назначені заняття - зверніться до адміністрації.
-                        </AlertDescription>
+                        <AlertTitle>{ua.dashboard.student.alert.title}</AlertTitle>
+                        <AlertDescription>{ua.dashboard.student.alert.description}</AlertDescription>
                     </Alert>                          
                 )}
 

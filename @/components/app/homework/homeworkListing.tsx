@@ -21,7 +21,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 import { Table,TableBody,TableCell,TableHead,TableHeader,TableRow,} from "@/components/ui/table"  
   
-
+import { ua } from "~/routes/translation";
 
 export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?:string}>){
     const submit = useSubmit();
@@ -72,10 +72,8 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                         {!homeworksToDo.length && (
                             <Alert>
                                 <HeartHandshake className="size-4 !text-green-600" />
-                                <AlertTitle>Нема завдань на виконання!</AlertTitle>
-                                <AlertDescription>
-                                    Вау! В це важко повірити, але у вас нема завдань на перевірку. Так тримати!
-                                </AlertDescription>
+                                <AlertTitle>{ua.homeworkPage.student.alert.title}</AlertTitle>
+                                <AlertDescription>{ua.homeworkPage.student.alert.description}</AlertDescription>
                             </Alert>                          
                         )}
 
@@ -87,7 +85,7 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                         <div className="flex flex-col gap-2">
                             {allHomeworks.courses.length!=0 && (
                                 <div className="flex items-center gap-2">
-                                    <Label>Курс:</Label>
+                                    <Label>{ua.homeworkPage.student.filters.course}</Label>
                                     <Select defaultValue={allHomeworks.courses[0].id} onValueChange={ (v:string) => getHomeworksByCourse(v) }>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue placeholder="Оберіть" />
@@ -107,12 +105,12 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[60px]">#</TableHead>
-                                            <TableHead>Урок</TableHead>
-                                            <TableHead>Завдання</TableHead>
-                                            <TableHead>Викладач</TableHead>
-                                            <TableHead>Дата створення ДЗ</TableHead>
-                                            <TableHead className="w-[200px] text-right">Оцінка</TableHead>
+                                            <TableHead className="w-[60px]">{ua.homeworkPage.student.table[0]}</TableHead>
+                                            <TableHead>{ua.homeworkPage.student.table[1]}</TableHead>
+                                            <TableHead>{ua.homeworkPage.student.table[2]}</TableHead>
+                                            <TableHead>{ua.homeworkPage.student.table[3]}</TableHead>
+                                            <TableHead>{ua.homeworkPage.student.table[4]}</TableHead>
+                                            <TableHead className="w-[200px] text-right">{ua.homeworkPage.student.table[5]}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -143,11 +141,11 @@ function HomeworkStudentCard({card, serverURI}:Readonly<{card:any, serverURI:any
 
                 <div className="flex flex-col gap-1">
                     <div className="flex gap-1 items-center">
-                        <p className="text-sm font-medium text-slate-900">Викладач:</p>
+                        <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.student.card.teacher}</p>
                         <p className="text-sm font-medium text-slate-500">{`${card.lesson.teacher.first_name} ${card.lesson.teacher.last_name}`}</p>
                     </div>
                     <div className="flex gap-1 items-center">
-                        <p className="text-sm font-medium text-slate-900">Виконати до:</p>
+                        <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.student.card.dueDate}</p>
                         <p className={cn("text-sm font-medium", isFuture(card.due_date) ? "text-slate-500" : "text-red-500") }>{ format(card.due_date,"dd.MM.yyyy")}</p>
                     </div>
                 </div>
@@ -161,7 +159,7 @@ function HomeworkStudentCard({card, serverURI}:Readonly<{card:any, serverURI:any
                 <div className="flex-1">
                 {card.homework_file && (
                     <Button className="w-fit" variant={"outline"} size={"sm"} asChild>
-                        <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> Завдання</a>
+                        <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.student.card.hwBtn}</a>
                     </Button>
                 )}
                 </div>
@@ -179,7 +177,7 @@ function HomeworkStudentTableCard({card, serverURI,index=0}:Readonly<{card:any, 
 
             <TableCell className="flex items-center gap-2">
                 <Avatar>
-                    <AvatarImage src={serverURI.slice(0, -1)+card.lesson.course.poster} />
+                    <AvatarImage src={card.lesson.course.poster ? (serverURI.slice(0, -1)+card.lesson.course.poster) : ("")} />
                     <AvatarFallback>{card.lesson.course.title[0]}</AvatarFallback>
                 </Avatar>
                 <p>{card.lesson.title}</p>
@@ -188,7 +186,7 @@ function HomeworkStudentTableCard({card, serverURI,index=0}:Readonly<{card:any, 
             <TableCell>
                 {card.homework_file && (
                     <Button className="w-fit mr-2" variant={"secondary"} size={"sm"} asChild>
-                        <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> Завданя</a>
+                        <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.student.tableRow.hwBtn}</a>
                     </Button>
                 )}
                 {card.description && (
@@ -207,9 +205,9 @@ function HomeworkStudentTableCard({card, serverURI,index=0}:Readonly<{card:any, 
 
             <TableCell className="text-right">
                 {card.submission ? (
-                    <Badge>{card.submission.grade ? card.submission.grade : "Ще не перевірено"}</Badge>
+                    <Badge variant={ card.submission.grade ? "default" : "secondary" }>{card.submission.grade ? card.submission.grade : ua.homeworkPage.student.tableRow.notMarked}</Badge>
                 ) : (
-                    "Потрібно винокати"
+                    ua.homeworkPage.student.tableRow.toDo
                 )}
             </TableCell>
 
@@ -359,10 +357,8 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                         {!homeworksToDo.length && (
                             <Alert>
                                 <HeartHandshake className="size-4 !text-green-600" />
-                                <AlertTitle>Нема завдань на перевірку!</AlertTitle>
-                                <AlertDescription>
-                                    Вау! В це важко повірити, але у вас нема завдань на перевірку. Так тримати!
-                                </AlertDescription>
+                                <AlertTitle>{ua.homeworkPage.teacher.alert.title}</AlertTitle>
+                                <AlertDescription>{ua.homeworkPage.teacher.alert.description}</AlertDescription>
                             </Alert>                          
                         )}
 
@@ -376,7 +372,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                             {allHomeworks.groups.length!=0 && (
                                 <div className="flex items-center gap-4 w-full overflow-scroll lg:overflow-hidden">
                                     <div className="flex items-center gap-2">
-                                        <Label>Група:</Label>
+                                        <Label>{ua.homeworkPage.teacher.filters.group}</Label>
                                         <Select defaultValue={allHomeworks.groups[0].id} onValueChange={ (v:string) => getHomeworksByGroup(v) }>
                                             <SelectTrigger className="w-[180px]">
                                                 <SelectValue placeholder="Оберіть" />
@@ -393,7 +389,7 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
 
 
                                     <div className="flex items-center gap-2">
-                                        <Label>Курс:</Label>
+                                        <Label>{ua.homeworkPage.teacher.filters.course}</Label>
                                         <Select defaultValue={allHomeworks.groups[selectedGroupIndex].courses[0].id} onValueChange={ (v:string) => getHomeworksByCourse(v) }>
                                             <SelectTrigger className="w-[180px]">
                                                 <SelectValue placeholder="Оберіть" />
@@ -414,13 +410,13 @@ export function HomeworkTeacherListing({selectedView=""}:Readonly<{selectedView?
                             <Table className=" overflow-scroll">
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[60px]">#</TableHead>
-                                        <TableHead>Студент</TableHead>
-                                        <TableHead>Дата завантаження</TableHead>
-                                        <TableHead className="w-[100px]">Примітка</TableHead>
-                                        <TableHead>Завдання</TableHead>
-                                        <TableHead>Робота</TableHead>
-                                        <TableHead className="w-[200px] text-right">Оцінка</TableHead>
+                                        <TableHead className="w-[60px]">{ua.homeworkPage.teacher.table[0]}</TableHead>
+                                        <TableHead>{ua.homeworkPage.teacher.table[1]}</TableHead>
+                                        <TableHead>{ua.homeworkPage.teacher.table[2]}</TableHead>
+                                        <TableHead className="w-[100px]">{ua.homeworkPage.teacher.table[3]}</TableHead>
+                                        <TableHead>{ua.homeworkPage.teacher.table[4]}</TableHead>
+                                        <TableHead>{ua.homeworkPage.teacher.table[5]}</TableHead>
+                                        <TableHead className="w-[200px] text-right">{ua.homeworkPage.teacher.table[6]}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -462,7 +458,7 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
                     
                     <div className="flex flex-col gap-2">
                         <Avatar>
-                            <AvatarImage src={serverURI.slice(0, -1)+card.student.avatar} />
+                            <AvatarImage src={card.student.avatar ? (serverURI.slice(0, -1)+card.student.avatar) : ("")} />
                             <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
                         </Avatar>
                         <p className="text-lg text-slate-900">{`${card.student.first_name} ${card.student.last_name}`}</p>
@@ -471,21 +467,21 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
 
                     <div className="flex flex-col gap-1">
                         <div className="flex gap-1 items-center">
-                            <p className="text-sm font-medium text-slate-900">Предмет:</p>
+                            <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.course}</p>
                             <p className="text-sm font-medium text-slate-500">{card.homework.title}</p>
                         </div>
                         <div className="flex gap-1 items-center">
-                            <p className="text-sm font-medium text-slate-900">Завантажено:</p>
+                            <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.uploaded}</p>
                             <p className={cn("text-sm font-medium text-slate-500")}>{ format(card.date_submitted,"dd.MM.yyyy")}</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col lg:items-end gap-2 lg:w-1/3 lg:pl-3 lg:border-l lg:border-l-slate-200">
-                    <p className="text-sm font-medium text-slate-900">Завдання:</p>
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.task}</p>
                     {card.homework.homework_file && (
                         <Button className="w-fit" variant={"secondary"} size={"sm"} asChild>
-                            <a href={`${serverURI.slice(0, -1)}${card.homework.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> Завданя</a>
+                            <a href={`${serverURI.slice(0, -1)}${card.homework.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.teacher.card.hwBtn}</a>
                         </Button>
                     )}
 
@@ -503,11 +499,11 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
                 <div className="flex-1">
                 {card.file && (
                     <Button className="w-fit" variant={"outline"} size={"sm"} asChild>
-                        <a href={`${serverURI.slice(0, -1)}${card.file}`} target="_blank" download><Download className="mr-2" size={20}/> Робота</a>
+                        <a href={`${serverURI.slice(0, -1)}${card.file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.teacher.card.workBtn}</a>
                     </Button>
                 )}
                 {!card.file && (
-                    <Badge variant={"outline"}>Файл не завантажен</Badge>
+                    <Badge variant={"outline"}>{ua.homeworkPage.teacher.card.missingFile}</Badge>
                 )}
                 </div>
 
@@ -543,7 +539,7 @@ function HomeworkTableTeacherCard({card, serverURI,index=0}:Readonly<{card:any, 
 
             <TableCell className="flex items-center gap-2">
                 <Avatar>
-                    <AvatarImage src={serverURI.slice(0, -1)+card.student.avatar} />
+                    <AvatarImage src={card.student.avatar ? (serverURI.slice(0, -1)+card.student.avatar) : ("")} />
                     <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
                 </Avatar>
 
@@ -554,9 +550,9 @@ function HomeworkTableTeacherCard({card, serverURI,index=0}:Readonly<{card:any, 
 
             <TableCell>
                 {compareDesc(card.homework.due_date,card.date_submitted)!=-1 ? (
-                    <Badge variant={"secondary"}>Запізно</Badge>
+                    <Badge variant={"secondary"}>{ua.homeworkPage.teacher.tableRow.late}</Badge>
                 ) : (
-                    <Badge variant={"outline"}>Вчасно</Badge>
+                    <Badge variant={"outline"}>{ua.homeworkPage.teacher.tableRow.inTime}</Badge>
                 )}
             </TableCell>
 
@@ -587,7 +583,7 @@ function HomeworkTableTeacherCard({card, serverURI,index=0}:Readonly<{card:any, 
             <TableCell className="text-right">
                 {card.grade ? (
                     <Badge>{card.grade}</Badge>
-                ) : "Не перевірено"}
+                ) : <Badge variant={"destructive"}>{ua.homeworkPage.teacher.tableRow.notMarked}</Badge>}
             </TableCell>
 
         </TableRow>

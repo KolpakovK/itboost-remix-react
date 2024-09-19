@@ -16,6 +16,8 @@ export const meta: MetaFunction = () => {
     ];
 };
 
+import { ua } from '~/routes/translation'
+
 export async function action({ request }:ActionFunctionArgs){
     const cookieHeader = request.headers.get("Cookie");
     const cookie = (await userCookie.parse(cookieHeader)) || null;
@@ -84,7 +86,7 @@ export default function CalendarPage() {
                 <div className="flex flex-col gap-6">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader title={`Календар занять`} />
+                    <AppHeader title={ua.calendar.pageName} />
 
                     <CalendarScreen serverURI={static_data.serverURI}/>
                 </div>

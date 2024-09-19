@@ -9,6 +9,7 @@ import TodaySchedule from "@/components/app/today/TodaySchedule";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertOctagon } from "lucide-react";
 
+import { ua } from "../translation";
 
 import { useToast } from "@/components/ui/use-toast"
 
@@ -230,7 +231,7 @@ export default function TodayPage(){
             if (action_data.error){
                 toast({
                     variant: "destructive",
-                    title: "Ошибка!",
+                    title: ua.today.toastError,
                     description: action_data.data,
                 })
             }
@@ -238,7 +239,7 @@ export default function TodayPage(){
                 if (action_data.type){
                     if (action_data.type=="toast"){
                         toast({
-                            title: "Готово!",
+                            title: ua.today.toastSuccess,
                             description: action_data.data,
                         })
                     }
@@ -255,7 +256,7 @@ export default function TodayPage(){
                     {}
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader subtitle="Оберіть заняття для початку" title={`Заняття на сьогодні`} />
+                    <AppHeader subtitle={ua.today.pageSubtitle} title={ua.today.pageName} />
 
                     {static_data.data ? (
                         <TodaySchedule/>
@@ -264,10 +265,8 @@ export default function TodayPage(){
                             <div className="block-size">
                                 <Alert>
                                     <AlertOctagon className="size-4 !text-yellow-600" />
-                                    <AlertTitle>У вас в графіку нема занять!</AlertTitle>
-                                    <AlertDescription>
-                                        Якщо ви впевнені, що у вас є назначені заняття - зверніться до адміністрації.
-                                    </AlertDescription>
+                                    <AlertTitle>{ua.today.alert.title}</AlertTitle>
+                                    <AlertDescription>{ua.today.alert.description}</AlertDescription>
                                 </Alert> 
                             </div>
                         </div>

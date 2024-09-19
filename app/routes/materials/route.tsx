@@ -18,6 +18,8 @@ export const meta: MetaFunction = () => {
     ];
 };
 
+import { ua } from "../translation";
+
 export async function action({request}:ActionFunctionArgs){
     const body:any = await request.formData().then( (data:any) => { return data }).catch( error => null);
 
@@ -101,7 +103,7 @@ export default function MaterialPage() {
                 <div className="flex flex-col gap-6">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader subtitle="Тут ви знайдете всі актуальні матеріали" title={`Матеріали для занять`} />
+                    <AppHeader subtitle={ua.materials.pageSubtitle} title={ua.materials.pageName} />
 
                     {actioin_data && (
                     <>
@@ -110,7 +112,7 @@ export default function MaterialPage() {
                             <div className=" block-size">
 
                                 <div className="flex items-center gap-2">
-                                    <Label>Матеріал:</Label>
+                                    <Label>{ua.materials.filter}</Label>
                                     <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue placeholder="Оберіть" />
@@ -137,7 +139,7 @@ export default function MaterialPage() {
                                             <p className=" text-slate-900">{material.desc}</p> 
                                             {material.pdf_file && (
                                                 <Button size={"sm"} className="w-fit" asChild>
-                                                    <a href={`${actioin_data.serverURI.slice(0, -1)}${material.pdf_file}`} target="_blank" download>Завантажити</a>
+                                                    <a href={`${actioin_data.serverURI.slice(0, -1)}${material.pdf_file}`} target="_blank" download>{ua.materials.downloadBtn}</a>
                                                 </Button>
                                             )}
                                         </div>

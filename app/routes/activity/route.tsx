@@ -20,6 +20,8 @@ export const meta: MetaFunction = () => {
     ];
 };
 
+import { ua } from "../translation";
+
 export async function action({request}:ActionFunctionArgs){
     const body:any = await request.formData().then( (data:any) => { return data }).catch( error => null);
 
@@ -111,7 +113,7 @@ export default function ActivityPage() {
                 <div className="flex flex-col gap-6">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader subtitle="Тут ви знайдете інформацію про активність" title={`Активність`}/>
+                    <AppHeader subtitle={ua.activity.pageSubtitle} title={ua.activity.pageName}/>
 
                     {actioin_data && (
                     <>
@@ -120,7 +122,7 @@ export default function ActivityPage() {
                             <div className=" block-size">
 
                                 <div className="flex items-center gap-2">
-                                    <Label>Курс:</Label>
+                                    <Label>{ua.activity.filter}</Label>
                                     <Select defaultValue={actioin_data.data.current_course.id} onValueChange={ (v:string) => updateSelectedCourse(v) }>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue placeholder="Оберіть" />
@@ -144,31 +146,31 @@ export default function ActivityPage() {
                                         <div className="p-3 lg:p-6 rounded-md bg-white border border-slate-300 flex flex-col gap-2" key={index}>
 
                                             <div className="flex gap-2 items-baseline">
-                                                <p className=" text-sm text-slate-500 font-light">Назва:</p>
+                                                <p className=" text-sm text-slate-500 font-light">{ua.activity.card.name}</p>
                                                 <p className=" text-sm text-slate-900 font-medium">{lesson.title}</p>
                                             </div>
 
                                             <div className="flex gap-2 items-baseline">
-                                                <p className=" text-sm text-slate-500 font-light">Дата:</p>
+                                                <p className=" text-sm text-slate-500 font-light">{ua.activity.card.date}</p>
                                                 <p className=" text-sm text-slate-900 font-medium">{ lesson.lesson_date && (format(lesson.lesson_date,"dd.MM.yyyy") )}</p>
                                             </div>
 
                                             <div className="flex gap-2 items-baseline">
-                                                <p className=" text-sm text-slate-500 font-light">Оцінка на заняті:</p>
-                                                <p className=" text-sm text-green-600 font-bold">{lesson.grade_on_lesson}</p>
+                                                <p className=" text-sm text-slate-500 font-light">{ua.activity.card.mark}</p>
+                                                <p className=" text-sm text-green-600 font-bold">{lesson.grade_on_lesson ? lesson.grade_on_lesson : "-"}</p>
                                             </div>
 
                                             <div className="flex gap-2 items-baseline">
-                                                <p className=" text-sm text-slate-500 font-light">Оцінка за домашню роботу:</p>
-                                                <p className=" text-sm text-violet-600 font-bold">{lesson.homework_grade}</p>
+                                                <p className=" text-sm text-slate-500 font-light">{ua.activity.card.markHW}</p>
+                                                <p className=" text-sm text-violet-600 font-bold">{lesson.homework_grade ? lesson.homework_grade : "-"}</p>
                                             </div>
 
                                             <div className="flex gap-2 items-baseline">
-                                                <p className=" text-sm text-slate-500 font-light">Відвідування:</p>
+                                                <p className=" text-sm text-slate-500 font-light">{ua.activity.card.presentLabel}</p>
                                                 <div className=" text-sm text-slate-900 font-medium">{lesson.is_present ? ( lesson.is_late ?
-                                                    (<Badge variant={"secondary"}>Запізнився</Badge>) :
-                                                    (<Badge>Присутний</Badge>) ) :
-                                                    (<Badge variant={"destructive"}>Відсутній</Badge>)}
+                                                    (<Badge variant={"secondary"}>{ua.activity.card.late}</Badge>) :
+                                                    (<Badge>{ua.activity.card.present}</Badge>) ) :
+                                                    (<Badge variant={"destructive"}>{ua.activity.card.notPresent}</Badge>)}
                                                 </div>
                                             </div>
 
@@ -183,10 +185,8 @@ export default function ActivityPage() {
 
                                 <Alert>
                                     <HeartHandshake className="size-4 !text-green-600" />
-                                    <AlertTitle>Нема завдань на виконання!</AlertTitle>
-                                    <AlertDescription>
-                                        Вау! В це важко повірити, але у вас нема завдань на перевірку. Так тримати!
-                                    </AlertDescription>
+                                    <AlertTitle>{ua.activity.alert.title}</AlertTitle>
+                                    <AlertDescription>{ua.activity.alert.description}</AlertDescription>
                                 </Alert> 
 
                             </div>

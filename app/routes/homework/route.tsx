@@ -11,6 +11,8 @@ import { HomeworkStudentListing,HomeworkTeacherListing } from "@/components/app/
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import { ua } from "../translation";
+
 export const meta: MetaFunction = () => {
     return [
         { title: "Homeworks" },
@@ -221,7 +223,7 @@ export default function HomeworkPage() {
             if (action_data.error){
                 toast({
                     variant:"destructive",
-                    title:"Помилка",
+                    title:ua.homeworkPage.toastError,
                     description:action_data.data
                 })
             }
@@ -248,11 +250,11 @@ export default function HomeworkPage() {
                 <div className="flex flex-col gap-6 pb-20 lg:pb-0">
                     <AppNavigation role={static_data.user_data.role} name={static_data.user_data.first_name} surname={static_data.user_data.last_name} avatar={static_data.user_data.avatar} serverURI={static_data.serverURI}/>
 
-                    <AppHeader title={`Домашні роботи`}>
+                    <AppHeader title={ua.homeworkPage.pageName}>
                         <Tabs defaultValue="to-do" onValueChange={ (v:string) => setSelectedView(v) }>
                             <TabsList>
-                                <TabsTrigger value="to-do">До виконання</TabsTrigger>
-                                <TabsTrigger value="all">Всі</TabsTrigger>
+                                <TabsTrigger value="to-do">{ua.homeworkPage.tabs[0]}</TabsTrigger>
+                                <TabsTrigger value="all">{ua.homeworkPage.tabs[1]}</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </AppHeader>

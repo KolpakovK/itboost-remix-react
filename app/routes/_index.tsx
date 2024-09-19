@@ -9,6 +9,8 @@ import StudentDashboard from "@/components/app/dashboard/StudentDashboard";
 import AppHeader from "@/components/app/misc/AppHeader";
 import TeacherDashboard from "@/components/app/dashboard/TeacherDashboard";
 
+import { ua } from "./translation";
+
 export const meta: MetaFunction = () => {
     return [
         { title: "Dashboad" },
@@ -70,7 +72,7 @@ export default function Index() {
                 <div className="flex flex-col gap-6 pb-20 lg:pb-0">
                     <AppNavigation role={dashboard_data.user_data.role} name={dashboard_data.user_data.first_name} surname={dashboard_data.user_data.last_name} avatar={dashboard_data.user_data.avatar} serverURI={dashboard_data.serverURI}/>
 
-                    <AppHeader subtitle="Головна" title={`Привіт, ${dashboard_data.user_data.first_name}!`} />
+                    <AppHeader subtitle={ua.dashboard.pageSubtitle} title={`${ua.dashboard.pageName} ${dashboard_data.user_data.first_name}!`} />
 
                     {dashboard_data.user_data.role=="student" && (
                         <StudentDashboard future_lessons={dashboard_data.data.future_lessons} average_mark={dashboard_data.data.average_mark} homeworks={dashboard_data.data.homeworks} lesson_in_month={dashboard_data.data.lesson_in_month} lesson_visited={dashboard_data.data.lesson_visited}/>
