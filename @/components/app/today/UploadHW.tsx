@@ -15,6 +15,7 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
     let action_data:any = useActionData();
 
     const [isOpened,setIsOpened]:any = useState(false);
+    const [isSubmited,setIsSubmited] = useState(false);
     const [fileIsAllowed,setFileIsAllowed]:any = useState(true);
     
     function onFileSelectedHandler(e:any){
@@ -29,6 +30,7 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
 
     useEffect( () => {
         if (action_data){
+            setIsSubmited(false);
             if (action_data.type){
                 if (action_data.type=="toast"){
                     setIsOpened(false);
@@ -47,13 +49,13 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
                     <DialogDescription>{ua.today.uploadHW.description}</DialogDescription>
                 </DialogHeader>
 
-                <Form method="POST" className="flex flex-col gap-8" encType="multipart/form-data">
+                <Form method="POST" className="flex flex-col gap-8" encType="multipart/form-data" onSubmit={ () => setIsSubmited(true) }>
                     <input type="text" readOnly name="lesson" defaultValue={lesson} className=" hidden"/>
                     <input type="text" readOnly name="type" defaultValue={"uploadHomeWork"} className=" hidden"/>
                     <div className="flex flex-col gap-6">
                         <div className="flex flex-col gap-2">
                             <Label>{ua.today.uploadHW.fields.theme}</Label>
-                            <Input type="text" name="title" defaultValue={lessonTitle}/>
+                            <Input type="text" name="title" defaultValue={lessonTitle} required/>
                         </div>
 
                         <div className="flex flex-col gap-2">
@@ -63,7 +65,7 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
 
                         <div className="flex flex-col gap-2 relative">
                             <Label>{ua.today.uploadHW.fields.dueDate}</Label>
-                            <Input type="date" name="due_date"/>
+                            <Input type="date" name="due_date" required/>
                         </div>
 
                         <div className="flex flex-col gap-2 relative">
@@ -74,7 +76,7 @@ export default function UploadHomeWork({lesson,lessonTitle}:Readonly<{lesson:num
                     </div>
 
                     <div className={cn( !fileIsAllowed && " pointer-events-none opacity-50" )}>
-                        <Button>{ua.today.uploadHW.fields.submit}</Button>
+                        <Button className={isSubmited ? "pointer-events-none opacity-50" : ""}>{ua.today.uploadHW.fields.submit}</Button>
                     </div>
                 </Form>
 

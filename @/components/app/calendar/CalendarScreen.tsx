@@ -47,7 +47,6 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
             onSelectedDateUpdate(date) {
                 if (format(date,"yyyy-MM")!=format(selectedDate,"yyyy-MM")){
                     setSelectedDate(format(date,"yyyy-MM-dd"));
-                    setIsLoading(true);
                     const formData = new FormData();
                     formData.append("start_data", format(date,"yyyy-MM-dd") );
                     submit(formData, { method: "post" });

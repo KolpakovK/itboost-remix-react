@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Dashboad" },
+        { title: "Налаштування" },
         { name: "description", content: "Welcome to Remix!" },
     ];
 };
@@ -30,6 +30,11 @@ export async function action({request}:ActionFunctionArgs){
     if (!cookie) { return redirect("/login");} 
 
     const body = await request.formData();
+
+    if (body.get("avatar")!=null){
+        let avatar:any =  body.get("avatar")
+        if ( avatar.size==0 ) body.delete("avatar");
+    }
 
     const response = await fetch(`${process.env.SERVER_HOST}user/profile/`,{
         method:"PUT",
@@ -103,7 +108,7 @@ export async function loader({ request }:LoaderFunctionArgs){
     return  response
 }
 
-export default function MaterialPage() {
+export default function SettingsPage() {
     let static_data:any = useLoaderData();
     let actioin_data:any = useActionData();
     const [isLoading,SetIsLoading] = useState(true);
@@ -201,7 +206,7 @@ export default function MaterialPage() {
                                         </div>
                                     )}
 
-                                    <Button>{isLoading  ? (<Loader size={20}/>) : ua.settings.fields.submit}</Button>
+                                    <Button className={isSubmited ? "pointer-events-none opacity-50" : "" }>{isSubmited  ? (<Loader size={20}/>) : ua.settings.fields.submit}</Button>
                                 </Form>
                             
                             </div>

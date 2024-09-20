@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Dashboad" },
+        { title: "Матеріали" },
         { name: "description", content: "Welcome to Remix!" },
     ];
 };

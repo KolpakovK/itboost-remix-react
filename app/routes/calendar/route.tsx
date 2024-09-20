@@ -11,7 +11,7 @@ import CalendarScreen from "@/components/app/calendar/CalendarScreen";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Calendar" },
+        { title: "Календар" },
         { name: "description", content: "Welcome to Remix!" },
     ];
 };

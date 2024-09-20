@@ -84,7 +84,7 @@ export function LoginForm() {
                                 <Input type="password" {...field} />
                             </FormControl>
                             <FormDescription>
-                                {ua.loginForm.forgotPassword[0]} <a href="#" className="text-violet-500">{ua.loginForm.forgotPassword[1]}</a> {ua.loginForm.forgotPassword[2]}
+                                {ua.loginForm.forgotPassword[0]}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

@@ -15,7 +15,7 @@ import { ua } from "../translation";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Homeworks" },
+        { title: "Домашні роботи" },
         { name: "description", content: "Welcome to Remix!" },
     ];
 };

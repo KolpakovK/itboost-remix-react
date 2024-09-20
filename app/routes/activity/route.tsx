@@ -15,7 +15,7 @@ import { HeartHandshake } from "lucide-react";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Dashboad" },
+        { title: "Активність" },
         { name: "description", content: "Welcome to Remix!" },
     ];
 };

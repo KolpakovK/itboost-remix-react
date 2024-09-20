@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
-import { Download, MessageCircleMore, HeartHandshake } from "lucide-react";
+import { Download, MessageCircleMore, HeartHandshake, Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -223,9 +223,11 @@ function UploadHomeworkFromStudent({homework}:Readonly<{homework:any}>){
 
     const [isOpened,setIsOpened] = useState(false);
     const [fileIsAllowed,setFileIsAllowed]:any = useState(true);
+    const [isSubmited,setIsSubmited] = useState(false);
 
     useEffect( () => {
         if (action_data){
+            setIsSubmited(false);
             if (action_data.type){
                 if (action_data.type=="uploaded"){
                     toast({
@@ -258,7 +260,7 @@ function UploadHomeworkFromStudent({homework}:Readonly<{homework:any}>){
                     </DialogDescription>
                 </DialogHeader>
 
-                <Form method="POST" className="flex flex-col gap-8" encType="multipart/form-data">
+                <Form method="POST" className="flex flex-col gap-8" encType="multipart/form-data" onSubmit={ () => setIsSubmited(true) }>
                     <input type="text" readOnly name="homework" value={homework} className=" hidden"/>
                     <input type="text" readOnly name="type" value={"uploadHomework"} className=" hidden"/>
                     <div className="flex flex-col gap-6">
@@ -276,7 +278,7 @@ function UploadHomeworkFromStudent({homework}:Readonly<{homework:any}>){
                     </div>
 
                     <div className={cn( !fileIsAllowed && " pointer-events-none opacity-50" )}>
-                        <Button>Завантажити</Button>
+                        <Button className={isSubmited ? "pointer-events-none opacity-50" : "" }>{isSubmited  ? (<Loader size={20}/>) : "Завантажити"}</Button>
                     </div>
                 </Form>
 
@@ -507,7 +509,7 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
                 )}
                 </div>
 
-                <Select onValueChange={(v:string) => setMark(v)}>
+                <Select defaultValue="" onValueChange={(v:string) => setMark(v)}>
                     <SelectTrigger className="w-[100px]">
                         <SelectValue placeholder="Оцінка"/>
                     </SelectTrigger>

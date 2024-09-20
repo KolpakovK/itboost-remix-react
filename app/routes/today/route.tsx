@@ -1,5 +1,5 @@
 import { useLoaderData, useActionData } from "@remix-run/react";
-import { LoaderFunctionArgs, redirect, ActionFunctionArgs, unstable_parseMultipartFormData, unstable_createFileUploadHandler, UploadHandler, unstable_createMemoryUploadHandler } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect, ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { userCookie } from "~/utils/cookies";
 import { useEffect, useState } from "react";
 import AppNavigation from "@/components/app/navigation/Navigation";
@@ -10,6 +10,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertOctagon } from "lucide-react";
 
 import { ua } from "../translation";
+
+export const meta: MetaFunction = () => {
+    return [
+        { title: "Сьогодні" },
+        { name: "description", content: "Welcome to Remix!" },
+    ];
+};
 
 import { useToast } from "@/components/ui/use-toast"
 

@@ -13,8 +13,8 @@ import { ua } from "./translation";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Dashboad" },
-        { name: "description", content: "Welcome to Remix!" },
+        { title: "Головна" },
+        { name: "description", content: "Платформа онлайн навчання" },
     ];
 };
 
