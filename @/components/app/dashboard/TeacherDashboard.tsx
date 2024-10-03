@@ -53,7 +53,7 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
                     </Alert>                          
                 )}
 
-                {future_lessons && (
+                {future_lessons.length && (
                     <Table>
                         <TableHeader>
                             <TableRow>

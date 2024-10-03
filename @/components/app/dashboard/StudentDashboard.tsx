@@ -76,7 +76,7 @@ export default function StudentDashboard({average_mark,homeworks,lesson_in_month
                     </Alert>                          
                 )}
 
-                {future_lessons && (
+                {future_lessons.length && (
                     <Table>
                         <TableHeader>
                             <TableRow>
