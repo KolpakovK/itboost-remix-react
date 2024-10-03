@@ -131,37 +131,42 @@ export function HomeworkStudentListing({selectedView=""}:Readonly<{selectedView?
 
 function HomeworkStudentCard({card, serverURI}:Readonly<{card:any, serverURI:any}>){
     return(
-        <div className="flex flex-col gap-4 p-3 rounded-md bg-transparent hover:bg-slate-50 duration-150">
+        <div className="flex flex-col gap-4 p-4 rounded-md bg-transparent hover:bg-slate-50 duration-150 border border-slate-200">
+            
+            <div className="flex flex-col gap-0">
+                <p className="text-base text-slate-900">{card.lesson.title}</p>
+                <p className="text-sm text-slate-500">{card.lesson.course.title}</p>
+            </div>
 
-            <div className="flex justify-between">
-                <div className="flex flex-col gap-0">
-                    <p className="text-lg text-slate-900">{card.lesson.title}</p>
-                    <p className="text-sm text-slate-500">{card.lesson.course.title}</p>
+
+            <div className=" grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <div className="flex gap-1 items-center">
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.student.card.teacher}</p>
+                    <p className="text-sm font-medium text-slate-500">{`${card.lesson.teacher.first_name} ${card.lesson.teacher.last_name}`}</p>
                 </div>
-
-                <div className="flex flex-col gap-1">
-                    <div className="flex gap-1 items-center">
-                        <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.student.card.teacher}</p>
-                        <p className="text-sm font-medium text-slate-500">{`${card.lesson.teacher.first_name} ${card.lesson.teacher.last_name}`}</p>
-                    </div>
-                    <div className="flex gap-1 items-center">
-                        <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.student.card.dueDate}</p>
-                        <p className={cn("text-sm font-medium", isFuture(card.due_date) ? "text-slate-500" : "text-red-500") }>{ format(card.due_date,"dd.MM.yyyy")}</p>
-                    </div>
+                <div className="flex gap-1 items-center">
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.student.card.dueDate}</p>
+                    <p className={cn("text-sm font-medium", isFuture(card.due_date) ? "text-slate-500" : "text-red-500") }>{ format(card.due_date,"dd.MM.yyyy")}</p>
                 </div>
             </div>
 
-            {card.description && (
-                <p className="text-sm w-2/3 text-slate-500">{card.description}</p>
-            )}
+            <div className="flex justify-between items-center">
 
-            <div className="flex justify-between gap-2">
-                <div className="flex-1">
-                {card.homework_file && (
-                    <Button className="w-fit" variant={"outline"} size={"sm"} asChild>
-                        <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.student.card.hwBtn}</a>
-                    </Button>
-                )}
+                <div className="flex items-center gap-2">
+                    {card.homework_file && (
+                        <Button className="w-fit" variant={"outline"} size={"sm"} asChild>
+                            <a href={`${serverURI.slice(0, -1)}${card.homework_file}`} target="_blank" download><Download className="mr-2" size={16}/> {ua.homeworkPage.student.card.hwBtn}</a>
+                        </Button>
+                    )}
+
+                    {card.description && (
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button size={"icon"} variant={"outline"} className=" size-9 rounded-md"><MessageCircleMore size={16} /></Button>
+                            </PopoverTrigger>
+                            <PopoverContent>{card.description}</PopoverContent>
+                        </Popover>
+                    )}
                 </div>
 
                 <UploadHomeworkFromStudent homework={card.id}/>
@@ -251,7 +256,7 @@ function UploadHomeworkFromStudent({homework}:Readonly<{homework:any}>){
 
     return(
         <Dialog open={isOpened} onOpenChange={ (open:boolean) => setIsOpened(open) }>
-            <DialogTrigger asChild><Button variant={"secondary"}>Завантажити роботу</Button></DialogTrigger>
+            <DialogTrigger asChild><Button variant={"default"} size={"sm"}>Завантажити роботу</Button></DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Завантажити роботу</DialogTitle>
