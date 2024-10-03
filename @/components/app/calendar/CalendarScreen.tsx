@@ -17,6 +17,8 @@ import { Badge } from '@/components/ui/badge'
 
 import { Calendar, UserCircle, Clock, Users } from 'lucide-react'
 
+import { Button } from '@/components/ui/button'
+
 const eventsServicePlugin = createEventsServicePlugin();
 
 function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
@@ -35,7 +37,7 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
         views: [createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
         dayBoundaries: {
             start: '09:00',
-            end: '21:00',
+            end: '23:59',
         },
 
         weekOptions:{
@@ -106,7 +108,7 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
                     <div>
                         <Sheet open={openDialog} onOpenChange={ () => setOpenDialog(false) }>
                             
-                            <SheetContent>
+                            <SheetContent className='h-full'>
                                 
                                 {selectedEvent.course && (
                                     <div className='flex flex-col gap-8'>
@@ -118,7 +120,7 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
                                             </SheetDescription>
                                         </SheetHeader>
 
-                                        <div className='flex flex-col gap-2'>
+                                        <div className='flex flex-col gap-2 h-full'>
                                             <Alert>
                                                 <Calendar className="h-4 w-4" />
                                                 <AlertTitle>Довжина курсу</AlertTitle>
@@ -155,10 +157,16 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
                                                 </AlertDescription>
                                             </Alert>
                                         </div>
+                                        
+                                        <Button asChild>
+                                            <a href={selectedEvent.lesson_url} target='_blank'>Приєднатись до дзвінку</a>
+                                        </Button>
+                                        
                                     </div>
                                 )}
                                 
                             </SheetContent>
+                            
                             
                         </Sheet>
 

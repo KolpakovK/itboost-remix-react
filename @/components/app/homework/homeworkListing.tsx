@@ -451,63 +451,82 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
         submit(form,{method:"POST"});
     }
 
-
     return(
-        <div className="flex flex-col gap-4 p-3 rounded-md bg-transparent hover:bg-slate-50 duration-150">
+        <div className="flex flex-col gap-4 p-4 rounded-md bg-transparent hover:bg-slate-50 duration-150 border border-slate-200">
 
-            <div className="flex flex-col lg:flex-row lg:justify-between gap-2 w-full">
-                <div className="flex flex-col gap-2">
-                    
-                    <div className="flex flex-col gap-2">
-                        <Avatar>
-                            <AvatarImage src={card.student.avatar ? (serverURI.slice(0, -1)+card.student.avatar) : ("")} />
-                            <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
-                        </Avatar>
-                        <p className="text-lg text-slate-900">{`${card.student.first_name} ${card.student.last_name}`}</p>
-                    </div>
-                    
-
-                    <div className="flex flex-col gap-1">
-                        <div className="flex gap-1 items-center">
-                            <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.course}</p>
-                            <p className="text-sm font-medium text-slate-500">{card.homework.title}</p>
-                        </div>
-                        <div className="flex gap-1 items-center">
-                            <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.uploaded}</p>
-                            <p className={cn("text-sm font-medium text-slate-500")}>{ format(card.date_submitted,"dd.MM.yyyy")}</p>
-                        </div>
-                    </div>
+            <div className="flex justify-between items-center">
+                <div className="flex gap-2 items-center">
+                    <Avatar>
+                        <AvatarImage src={card.student.avatar ? (serverURI.slice(0, -1)+card.student.avatar) : ("")} />
+                        <AvatarFallback>{`${card.student.first_name[0]}${card.student.last_name[0]}`}</AvatarFallback>
+                    </Avatar>
+                    <p className="text-base text-slate-900">{`${card.student.first_name} ${card.student.last_name}`}</p>
                 </div>
 
-                <div className="flex flex-col lg:items-end gap-2 lg:w-1/3 lg:pl-3 lg:border-l lg:border-l-slate-200">
-                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.task}</p>
+                <Badge variant={ compareDesc(card.homework.due_date,card.date_submitted)==1 ? ("destructive") : ("outline") }>
+                    {compareDesc(card.homework.due_date,card.date_submitted)==1 ? ("Запізно") : ("Вчасно")}
+                </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+
+                <div className="flex gap-1 items-center">
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.course}</p>
+                    <p className="text-sm font-medium text-slate-500">{card.homework.lesson.course.title}</p>
+                </div>
+                <div className="flex gap-1 items-center">
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.lesson}</p>
+                    <p className={cn("text-sm font-medium text-slate-500")}>{ card.homework.lesson.title }</p>
+                </div>
+
+                <div className="flex gap-1 items-center">
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.uploaded}</p>
+                    <p className="text-sm font-medium text-slate-500">{ format( card.date_submitted, "dd.MM.yyyy" ) }</p>
+                </div>
+                <div className="flex gap-1 items-center">
+                    <p className="text-sm font-medium text-slate-900">{ua.homeworkPage.teacher.card.due}</p>
+                    <p className={cn("text-sm font-medium text-slate-500")}>{ format( card.homework.due_date, "dd.MM.yyyy" ) }</p>
+                </div>
+
+            </div>
+
+
+            <div className="flex justify-between items-center">
+
+                <div className="flex items-center gap-2">
                     {card.homework.homework_file && (
-                        <Button className="w-fit" variant={"secondary"} size={"sm"} asChild>
-                            <a href={`${serverURI.slice(0, -1)}${card.homework.homework_file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.teacher.card.hwBtn}</a>
+                        <Button className="w-fit" variant={"outline"} size={"sm"} asChild>
+                            <a href={`${serverURI.slice(0, -1)}${card.homework.homework_file}`} target="_blank" download><Download className="mr-2" size={16}/> {ua.homeworkPage.teacher.card.hwBtn}</a>
                         </Button>
                     )}
 
                     {card.homework.description && (
-                        <p className="text-sm font-medium text-slate-500 lg:text-right">{card.homework.description}</p>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button size={"icon"} variant={"outline"} className=" size-9 rounded-md"><MessageCircleMore size={16} /></Button>
+                            </PopoverTrigger>
+                            <PopoverContent>{card.homework.description}</PopoverContent>
+                        </Popover>
+                    )}
+
+                    <div className="w-[1px] min-h-9 h-full bg-slate-200 block"></div>
+
+                    {card.comment && (
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button size={"icon"} variant={"secondary"} className=" size-9 rounded-md"><MessageCircleMore size={16} /></Button>
+                            </PopoverTrigger>
+                            <PopoverContent>{card.comment}</PopoverContent>
+                        </Popover>
+                    )}
+
+                    {card.file && (
+                        <Button className="w-fit" variant={"secondary"} size={"sm"} asChild>
+                            <a href={`${serverURI.slice(0, -1)}${card.file}`} target="_blank" download><Download className="mr-2" size={16}/> {ua.homeworkPage.teacher.card.workBtn}</a>
+                        </Button>
                     )}
                 </div>
-            </div>
 
-            {card.comment && (
-                <p className="text-sm w-2/3 text-slate-500">{card.comment}</p>
-            )}
-
-            <div className="flex justify-between gap-2">
-                <div className="flex-1">
-                {card.file && (
-                    <Button className="w-fit" variant={"outline"} size={"sm"} asChild>
-                        <a href={`${serverURI.slice(0, -1)}${card.file}`} target="_blank" download><Download className="mr-2" size={20}/> {ua.homeworkPage.teacher.card.workBtn}</a>
-                    </Button>
-                )}
-                {!card.file && (
-                    <Badge variant={"outline"}>{ua.homeworkPage.teacher.card.missingFile}</Badge>
-                )}
-                </div>
 
                 <Select defaultValue="" onValueChange={(v:string) => setMark(v)}>
                     <SelectTrigger className="w-[100px]">
@@ -529,6 +548,7 @@ function HomeworkTeacherCard({card, serverURI}:Readonly<{card:any, serverURI:any
                     </SelectContent>
                 </Select>
             </div>
+
         </div>
     )
 }

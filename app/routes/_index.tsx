@@ -31,7 +31,7 @@ export async function loader({ request }:LoaderFunctionArgs){
             "Authorization":`Bearer ${cookie.access}`,
         },
     }).then( res => res.json() ).then( async (data_res:any) => {
-
+        
         if (data_res.detail){
             throw new Error(data_res.detail);
         }else{
