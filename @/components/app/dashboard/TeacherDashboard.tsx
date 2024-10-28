@@ -1,14 +1,12 @@
 import DashboardCard from "@/components/app/dashboard/Card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 import { GraduationCap, AlertOctagon, Video } from "lucide-react";
-import { Label } from "@/components/ui/label";
 
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 
 import { ua } from "~/routes/translation";
 import { Button } from "@/components/ui/button";
@@ -53,7 +51,7 @@ export default function TeacherDashboard({homeworks_count,future_lessons}:Readon
                     </Alert>                          
                 )}
 
-                {future_lessons.length && (
+                {future_lessons.length!=0 && (
                     <Table>
                         <TableHeader>
                             <TableRow>

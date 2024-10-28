@@ -3,15 +3,14 @@
 import {  useCalendarApp, ScheduleXCalendar } from '@schedule-x/react'
 import { viewWeek, createViewMonthAgenda, createViewMonthGrid, createViewWeek, } from '@schedule-x/calendar'
 import { createEventsServicePlugin } from '@schedule-x/events-service'
-import { format, addMinutes } from 'date-fns'
-import { useActionData } from '@remix-run/react'
+import { format, addMinutes, startOfWeek, endOfWeek, getMonth } from 'date-fns'
+import { useActionData, useFetcher } from '@remix-run/react'
 
 import './index.css'
 
 import { useEffect,useState } from 'react'
-import { useSubmit } from '@remix-run/react'
 
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger,} from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from '@/components/ui/badge'
 
@@ -22,8 +21,7 @@ import { Button } from '@/components/ui/button'
 const eventsServicePlugin = createEventsServicePlugin();
 
 function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
-    const submit = useSubmit();
-    let schedule:any = useActionData();
+    let schedule:any = useFetcher();
 
     const [isLoading,setIsLoading] = useState(true)
     const [selectedDate,setSelectedDate] = useState(format(new Date(),"yyyy-MM-dd"));
@@ -49,9 +47,14 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
             onSelectedDateUpdate(date) {
                 if (format(date,"yyyy-MM")!=format(selectedDate,"yyyy-MM")){
                     setSelectedDate(format(date,"yyyy-MM-dd"));
+                    // Get the start and end of the week for the selected date
+                    const startOfTheWeek = startOfWeek(date, { weekStartsOn: 1 }); // Monday start
+                    const endOfTheWeek = endOfWeek(date, { weekStartsOn: 1 }); // Sunday end
+
                     const formData = new FormData();
-                    formData.append("start_data", format(date,"yyyy-MM-dd") );
-                    submit(formData, { method: "post" });
+                    formData.append("start_data", format(startOfTheWeek,"yyyy-MM-dd") );
+                    formData.append("end_data", format(endOfTheWeek,"yyyy-MM-dd") );
+                    schedule.submit(formData, { method: "post" });
                 }
             },
 
@@ -63,20 +66,21 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
     })
 
     useEffect( () => {
+            // Get the start and end of the week for the selected date
+            const startOfTheWeek = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Monday start
+            const endOfTheWeek = endOfWeek(selectedDate, { weekStartsOn: 1 }); // Sunday end
+
             const formData = new FormData();
-            formData.append("start_data", selectedDate );
-            submit(formData, { method: "post" });
+            formData.append("start_data", format(startOfTheWeek,"yyyy-MM-dd") );
+            formData.append("end_data", format(endOfTheWeek,"yyyy-MM-dd") );
+            schedule.submit(formData, { method: "post" });
     },[])
 
     useEffect( () => {
-        if (schedule){
+        if (schedule.data){
             setIsLoading(false);
-        }
-    }, [schedule] )
 
-    useEffect( () => {
-        if (schedule){
-            schedule.data.month.forEach( (item:any) => {
+            schedule.data.data.month.forEach( (item:any) => {
                 try{
                     if (!eventsServicePlugin.get(item.id)){
                         let start_date = format(item.lesson_date,"yyyy-MM-dd HH:mm");
@@ -98,7 +102,8 @@ function CalendarScreen({serverURI=""}:Readonly<{serverURI?:string}>) {
                 }
             });
         }
-    }, [isLoading] )
+    }, [schedule] )
+
     
     return (
         <div className="flex justify-center px-4 lg:px-0">

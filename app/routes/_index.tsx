@@ -19,42 +19,46 @@ export const meta: MetaFunction = () => {
 };
 
 
-export async function loader({ request }:LoaderFunctionArgs){
+export async function loader({ request }: LoaderFunctionArgs) {
     const cookieHeader = request.headers.get("Cookie");
-    const cookie = (await userCookie.parse(cookieHeader)) || null;
+    const cookie = await userCookie.parse(cookieHeader) || null;
+    
+    if (!cookie) {
+        return redirect("/login");
+    }
 
-    if (!cookie) { return redirect("/login");} 
+    const serverURI = process.env.SERVER_HOST;
 
-    const response = await fetch(`${process.env.SERVER_HOST}education/dashboard/`,{
-        method:"GET",
-        headers:{
-            "Authorization":`Bearer ${cookie.access}`,
-        },
-    }).then( res => res.json() ).then( async (data_res:any) => {
-        
-        if (data_res.detail){
+    try {
+        const response = await fetch(`${serverURI}education/dashboard/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${cookie.access}`,
+            },
+        });
+
+        const data_res = await response.json();
+
+        if (data_res.detail) {
             throw new Error(data_res.detail);
-        }else{
-
-            return ({
-                error: false,
-                data: data_res,
-                user_data: cookie.user_data,
-                serverURI : process.env.SERVER_HOST,
-            })
         }
-        
-    }).catch( async (error:any) => {
-        //ERROR
-        console.log(error)
-        return redirect("/login",{
+
+        return {
+            error: false,
+            data: data_res,
+            user_data: cookie.user_data,
+            serverURI,
+        };
+    } catch (error) {
+        console.error(error);
+
+        // Clear cookies and redirect to login on error
+        return redirect("/login", {
             headers: {
                 "Set-Cookie": await userCookie.serialize({}),
             },
-        })
-    })
-
-    return response;
+        });
+    }
 }
 
 export default function Index() {

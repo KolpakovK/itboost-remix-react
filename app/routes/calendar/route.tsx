@@ -1,7 +1,7 @@
 import type { MetaFunction, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { redirect, useActionData, useLoaderData, useSubmit } from "@remix-run/react";
 import { userCookie } from "~/utils/cookies";
-import { format } from "date-fns";
+import { format, getMonth, parseISO } from "date-fns";
 
 import { useState, useEffect } from "react";
 
@@ -18,56 +18,114 @@ export const meta: MetaFunction = () => {
 
 import { ua } from '~/routes/translation'
 
-export async function action({ request }:ActionFunctionArgs){
+export async function action({ request }: ActionFunctionArgs) {
     const cookieHeader = request.headers.get("Cookie");
-    const cookie = (await userCookie.parse(cookieHeader)) || null;
+    const cookie = await userCookie.parse(cookieHeader) || null;
 
-    const data:any = await request.formData();
+    if (!cookie) return redirect("/login");
 
-    const response = await fetch(`${process.env.SERVER_HOST}education/schedule/?start_date=${ data.get("start_data") }`,{
-        method:"GET",
-        headers:{
-            "Authorization":`Bearer ${cookie.access}`,
-        },
-    }).then( res => res.json() ).then( async (data_res:any) => {
+    const data = await request.formData();
+    const startDate:any = data.get("start_data");
+    const endDate:any = data.get("end_data");
+    const serverURI = process.env.SERVER_HOST;
+    const url = `${serverURI}education/schedule/?start_date=${startDate}`;
 
-        if (data_res.detail){
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${cookie.access}`,
+            },
+        });
+
+        const data_res = await response.json();
+
+        if (data_res.detail) {
             throw new Error(data_res.detail);
-        }else{
+        }
 
-            return ({
-                error: false,
-                data: data_res,
-                serverURI : process.env.SERVER_HOST,
-            })
+        let data_first = data_res;
+
+        const startMonth = getMonth(startDate);
+        const endMonth = getMonth(endDate);
+
+        let data_second = null;
+
+        if (startMonth != endMonth) {
+
+            const url_second = `${serverURI}education/schedule/?start_date=${endDate}`;
+
+            try{
+                const response_second = await fetch(url_second, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${cookie.access}`,
+                    },
+                });
+
+                const data_res_second = await response_second.json();
+
+                if (data_res_second.detail) {
+                    throw new Error(data_res_second.detail);
+                }
+
+                data_second = data_res_second;
+            } catch (error) {
+                console.error(error);
+        
+                // Clear cookies and redirect to login on error
+                return redirect("/login", {
+                    headers: {
+                        "Set-Cookie": await userCookie.serialize({}),
+                    },
+                });
+            }
+
+        }
+
+
+        let combinedData = data_first;
+        if (data_second != null){
+            combinedData = {
+                month: [...data_first.month, ...data_second.month]
+            }
         }
         
-    }).catch( async (error:any) => {
-        //ERROR
-        console.log(error)
-        return redirect("/login",{
+        return {
+            error: false,
+            data: combinedData,
+            serverURI,
+        };
+
+    } catch (error) {
+        console.error(error);
+
+        // Clear cookies and redirect to login on error
+        return redirect("/login", {
             headers: {
                 "Set-Cookie": await userCookie.serialize({}),
             },
-        })
-    })
-
-    return response;
+        });
+    }
 }
 
-export async function loader({ request }:LoaderFunctionArgs){
+
+export async function loader({ request }: LoaderFunctionArgs) {
     const cookieHeader = request.headers.get("Cookie");
-    const cookie = (await userCookie.parse(cookieHeader)) || null;
+    const cookie = await userCookie.parse(cookieHeader) || null;
 
-    if (!cookie) { return redirect("/login");} 
+    if (!cookie) {
+        return redirect("/login");
+    }
 
-    let result = {
-        user_data : cookie.user_data,
-        serverURI : process.env.SERVER_HOST,
+    const serverURI = process.env.SERVER_HOST;
+
+    return {
+        user_data: cookie.user_data,
+        serverURI,
     };
-
-    return result;
 }
+
 
 export default function CalendarPage() {
 

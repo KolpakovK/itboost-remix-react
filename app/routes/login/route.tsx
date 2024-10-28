@@ -12,44 +12,48 @@ import { LoginForm } from "@/components/login/LoginForm";
 
 import { ua } from "../translation";
 
-export async function action({
-    request,
-}: ActionFunctionArgs) {
-    const data:any = await request.formData();
-    
-    const response = await fetch(`${process.env.SERVER_HOST}user/token/`,{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json",
-        },
-        body: JSON.stringify({username:data.get("username"),password:data.get("password")})
-    }).then( res => res.json() ).then( async (data_res:any) => {
+export async function action({ request }: ActionFunctionArgs) {
+    const data = await request.formData();
+    const serverURI = process.env.SERVER_HOST;
 
-        if (data_res.detail){
+    try {
+        const response = await fetch(`${serverURI}user/token/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: data.get("username"),
+                password: data.get("password"),
+            }),
+        });
+
+        const data_res = await response.json();
+
+        if (data_res.detail) {
             throw new Error(data_res.detail);
-        }else{
+        }
 
-            return json({
+        return json(
+            {
                 error: false,
                 message: `${ua.login.toast} ${data_res.user_data.first_name}`,
-            },{
+            },
+            {
                 headers: {
                     "Set-Cookie": await userCookie.serialize(data_res),
                 },
-            })
-        }
-        
-    }).catch( (error:any) => {
-        //ERROR
-        console.log(error)
-        return ({
-            error: true,
-            message: error.message
-        })
-    })
-
-    return response
-    
+            }
+        );
+    } catch (error:any) {
+        console.error(error);
+        return json(
+            {
+                error: true,
+                message: error.message,
+            }
+        );
+    }
 }
 
 export default function LoginPage() {
